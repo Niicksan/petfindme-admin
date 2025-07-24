@@ -51,7 +51,6 @@ class SignalPolicy
      */
     public function activate(User $user): bool
     {
-        dd($$user->role_id === 1);
         return $user !== null && $user->role_id === 1;
     }
 
