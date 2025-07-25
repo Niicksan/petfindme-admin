@@ -10,12 +10,15 @@ class UserController extends Controller
 {
 	public function index()
 	{
+		$perPage = request('per_page', 10);
+		$page = request('page', 1);
+
 		$users = User::with('role')
 			->orderByDesc('id')
 			// ->where('role_id', '!=', 1) // exclude admin role
 			->select('id', 'name', 'email', 'role_id', 'is_active', 'created_at')
-			->get()
-			->map(function ($user) {
+			->paginate($perPage, ['*'], 'page', $page)
+			->through(function ($user) {
 				return [
 					'id' => $user->id,
 					'name' => $user->name,

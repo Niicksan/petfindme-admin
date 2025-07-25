@@ -31,7 +31,7 @@ export default function UsersIndex({ users }) {
 			<DataTable
 				title="Users"
 				columns={columns}
-				data={users}
+				data={users.data}
 				pagination={users}
 				rowActions={rowActions}
 			/>

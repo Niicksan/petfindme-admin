@@ -14,10 +14,13 @@ class SignalController extends Controller
      */
     public function index()
     {
+        $perPage = request('per_page', 10);
+        $page = request('page', 1);
+
         $signals = Signal::with(['user', 'category', 'city', 'status'])
             ->orderByDesc('id')
-            ->get()
-            ->map(function ($signal) {
+            ->paginate($perPage, ['*'], 'page', $page)
+            ->through(function ($signal) {
                 return [
                     'id' => $signal->id,
                     'title' => $signal->title,

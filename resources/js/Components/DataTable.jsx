@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { router } from '@inertiajs/react';
 import {
 	Box,
@@ -16,19 +17,28 @@ import {
 	MenuItem,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import LastPageIcon from '@mui/icons-material/LastPage';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 
 export default function DataTable({
 	title,
 	columns,
 	data,
+	pagination,
 	rowActions = [],
 	onRowClick,
 	rowStyle = () => ({})
 }) {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [menuItemId, setMenuItemId] = useState(null);
-	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(10);
+
+	// Use pagination data if available, otherwise fall back to client-side pagination
+	const isServerPagination = pagination && pagination.data !== undefined;
+	const currentPage = isServerPagination ? pagination.current_page - 1 : 0;
+	const rowsPerPage = isServerPagination ? pagination.per_page : 10;
+	const totalCount = isServerPagination ? pagination.total : data.length;
 
 	const handleMenuOpen = (event, itemId) => {
 		setAnchorEl(event.currentTarget);
@@ -40,13 +50,83 @@ export default function DataTable({
 		setMenuItemId(null);
 	};
 
+
+	function TablePaginationActions(props) {
+		const theme = useTheme();
+		const { count, page, rowsPerPage, onPageChange } = props;
+
+		const handleFirstPageButtonClick = (event) => {
+			onPageChange(event, 0);
+		};
+
+		const handleBackButtonClick = (event) => {
+			onPageChange(event, page - 1);
+		};
+
+		const handleNextButtonClick = (event) => {
+			onPageChange(event, page + 1);
+		};
+
+		const handleLastPageButtonClick = (event) => {
+			onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+		};
+
+		return (
+			<Box sx={{ flexShrink: 0, ml: 2 }}>
+				<IconButton
+					onClick={handleFirstPageButtonClick}
+					disabled={page === 0}
+					aria-label="first page"
+					sx={{ pr: 0 }}
+				>
+					{theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+				</IconButton>
+				<IconButton
+					onClick={handleBackButtonClick}
+					disabled={page === 0}
+					aria-label="previous page"
+					sx={{ px: 0.5 }}
+				>
+					{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+				</IconButton>
+				<IconButton
+					onClick={handleNextButtonClick}
+					disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+					aria-label="next page"
+					sx={{ px: 0.5 }}
+				>
+					{theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+				</IconButton>
+				<IconButton
+					onClick={handleLastPageButtonClick}
+					disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+					aria-label="last page"
+					sx={{ pl: 0 }}
+				>
+					{theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+				</IconButton>
+			</Box>
+		);
+	}
+
 	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
+		if (isServerPagination) {
+			// Make a new request to the server with the new page
+			const url = new URL(window.location);
+			url.searchParams.set('page', newPage + 1);
+			router.get(url.pathname + url.search);
+		}
 	};
 
 	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
-		setPage(0);
+		const newRowsPerPage = +event.target.value;
+		if (isServerPagination) {
+			// Make a new request to the server with the new per_page
+			const url = new URL(window.location);
+			url.searchParams.set('per_page', newRowsPerPage);
+			url.searchParams.set('page', 1); // Reset to first page
+			router.get(url.pathname + url.search);
+		}
 	};
 
 	const handleActionClick = (action, item) => {
@@ -76,8 +156,7 @@ export default function DataTable({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{data
-							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+						{(isServerPagination ? data : data.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage))
 							.map((item) => (
 								<TableRow
 									key={item.id}
@@ -138,13 +217,14 @@ export default function DataTable({
 				</Table>
 			</TableContainer>
 			<TablePagination
-				rowsPerPageOptions={[10, 25, 100]}
+				rowsPerPageOptions={[10, 25, 50, 100]}
 				component="div"
-				count={data.length}
+				count={totalCount}
 				rowsPerPage={rowsPerPage}
-				page={page}
+				page={currentPage}
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
+				ActionsComponent={TablePaginationActions}
 			/>
 		</Box>
 	);

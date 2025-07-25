@@ -10,9 +10,12 @@ class ContactController extends Controller
 {
     public function index()
     {
+        $perPage = request('per_page', 10);
+        $page = request('page', 1);
+
         $contacts = Contact::orderByDesc('id')
-            ->get()
-            ->map(function ($contact) {
+            ->paginate($perPage, ['*'], 'page', $page)
+            ->through(function ($contact) {
                 return [
                     'id' => $contact->id,
                     'name' => $contact->name,
@@ -22,6 +25,7 @@ class ContactController extends Controller
                     'created_at' => $contact->created_at->toDateTimeString(),
                 ];
             });
+
         return Inertia::render('Contacts/Index', [
             'contacts' => $contacts,
         ]);

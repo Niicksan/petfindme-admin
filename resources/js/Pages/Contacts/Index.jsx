@@ -34,7 +34,7 @@ export default function ContactsIndex({ contacts }) {
 			<DataTable
 				title="Emails"
 				columns={columns}
-				data={contacts}
+				data={contacts.data}
 				pagination={contacts}
 				rowActions={rowActions}
 			/>

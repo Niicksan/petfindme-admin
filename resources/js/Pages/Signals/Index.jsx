@@ -48,7 +48,7 @@ export default function SignalsIndex({ signals }) {
 			<DataTable
 				title="Signals"
 				columns={columns}
-				data={signals}
+				data={signals.data}
 				pagination={signals}
 				rowActions={rowActions}
 				rowStyle={rowStyle}
