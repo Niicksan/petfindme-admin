@@ -13,6 +13,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import SecurityIcon from '@mui/icons-material/Security';
@@ -83,15 +84,27 @@ export default function UsersPreview({ user }) {
 				<Card sx={{ mb: 3 }}>
 					<CardContent>
 						<Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-							<PersonIcon sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
-							<Typography variant="h5" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-								{user.name}
+							<AccountCircleIcon sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
+							<Typography variant="h5" sx={{ color: 'primary', fontWeight: 'bold' }}>
+								{user.name} ({user.email})
 							</Typography>
 						</Box>
 
 						<Divider sx={{ my: 2 }} />
 
 						<Grid container spacing={1} sx={{ display: 'flex', flexDirection: 'column' }}>
+							{/* Name Info */}
+							<Grid item xs={12} md={12}>
+								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+									<PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
+									<Typography variant="h7" component="span" sx={{ minWidth: '60px' }}>
+										Name:
+									</Typography>
+									<Typography variant="body1" sx={{ ml: 3 }}>
+										{user.name}
+									</Typography>
+								</Box>
+							</Grid>
 							{/* Email Info */}
 							<Grid item xs={12} md={12}>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
