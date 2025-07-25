@@ -40,7 +40,7 @@ export default function Dashboard({ totalUsers, totalSignals, totalContacts, new
                 </Typography>
                 <Grid container spacing={3}>
                     {cards.map((card) => (
-                        <Grid item xs={12} sm={6} md={4} key={card.title}>
+                        <Grid key={card.title}>
                             <Card
                                 elevation={6}
                                 sx={{
