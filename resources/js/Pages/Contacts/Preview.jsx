@@ -66,7 +66,7 @@ export default function ContactsPreview({ contact }) {
 
 						<Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column' }}>
 							{/* Sender Info */}
-							<Grid item xs={12} md={12} >
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 0, mt: 1 }}>
 									<PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="body1" fontWeight="bold" sx={{ minWidth: '50px' }}>
@@ -78,7 +78,7 @@ export default function ContactsPreview({ contact }) {
 								</Box>
 							</Grid>
 
-							<Grid item xs={12} md={12} >
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 0, mt: 1 }}>
 									<EmailIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="body1" fontWeight="bold" sx={{ minWidth: '50px' }}>
@@ -91,7 +91,7 @@ export default function ContactsPreview({ contact }) {
 							</Grid>
 
 							{/* Date Info */}
-							<Grid item xs={12} md={12}>
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 									<ScheduleIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="body1" fontWeight="bold" sx={{ minWidth: '50px' }}>

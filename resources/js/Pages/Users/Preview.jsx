@@ -94,7 +94,7 @@ export default function UsersPreview({ user }) {
 
 						<Grid container spacing={1} sx={{ display: 'flex', flexDirection: 'column' }}>
 							{/* Name Info */}
-							<Grid item xs={12} md={12}>
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 									<PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="h7" component="span" sx={{ minWidth: '60px' }}>
@@ -106,7 +106,7 @@ export default function UsersPreview({ user }) {
 								</Box>
 							</Grid>
 							{/* Email Info */}
-							<Grid item xs={12} md={12}>
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 									<EmailIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="h7" component="span" sx={{ minWidth: '60px' }}>
@@ -119,7 +119,7 @@ export default function UsersPreview({ user }) {
 							</Grid>
 
 							{/* Role Info */}
-							<Grid item xs={12} md={12}>
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 									<SecurityIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="h7" component="span" sx={{ minWidth: '60px' }}>
@@ -132,7 +132,7 @@ export default function UsersPreview({ user }) {
 							</Grid>
 
 							{/* Status Info */}
-							<Grid item xs={12} md={12}>
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 
 									<GppGoodIcon sx={{ mr: 1, color: 'primary.main' }} />
@@ -150,7 +150,7 @@ export default function UsersPreview({ user }) {
 							</Grid>
 
 							{/* Date Info */}
-							<Grid item xs={12} md={12}>
+							<Grid>
 								<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
 									<ScheduleIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="h7" component="span" sx={{ minWidth: '60px' }}>
@@ -181,7 +181,7 @@ export default function UsersPreview({ user }) {
 							}}
 						>
 							<Grid container spacing={2}>
-								<Grid item xs={12}>
+								<Grid>
 									<Typography variant="subtitle2" color="text.secondary">
 										User ID
 									</Typography>
@@ -189,7 +189,7 @@ export default function UsersPreview({ user }) {
 										#{user.id}
 									</Typography>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid>
 									<Typography variant="subtitle2" color="text.secondary">
 										Account Type
 									</Typography>
