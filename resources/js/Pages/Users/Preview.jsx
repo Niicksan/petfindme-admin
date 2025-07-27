@@ -81,7 +81,7 @@ export default function UsersPreview({ user }) {
 				</Box>
 
 				{/* User Details Card */}
-				<Card sx={{ mb: 3 }}>
+				<Card sx={{ mb: 3, maxWidth: 800, mx: 'auto' }}>
 					<CardContent>
 						<Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
 							<AccountCircleIcon sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
@@ -166,7 +166,7 @@ export default function UsersPreview({ user }) {
 				</Card>
 
 				{/* Additional Information Card */}
-				<Card>
+				<Card sx={{ maxWidth: 800, mx: 'auto' }}>
 					<CardContent>
 						<Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
 							User Information
@@ -214,4 +214,4 @@ export default function UsersPreview({ user }) {
 			/>
 		</>
 	);
-} 
+};

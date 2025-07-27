@@ -56,7 +56,7 @@ export default function ContactsPreview({ contact }) {
 				</Box>
 
 				{/* Contact Details Card */}
-				<Card sx={{ mb: 3 }}>
+				<Card sx={{ mb: 3, maxWidth: 800, mx: 'auto' }}>
 					<CardContent>
 						<Typography variant="h5" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
 							{contact.subject}
@@ -79,7 +79,7 @@ export default function ContactsPreview({ contact }) {
 							</Grid>
 
 							<Grid>
-								<Box sx={{ display: 'flex', alignItems: 'center', mb: 0, mt: 1 }}>
+								<Box sx={{ display: 'flex', alignItems: 'center', mb: 0 }}>
 									<EmailIcon sx={{ mr: 1, color: 'primary.main' }} />
 									<Typography variant="body1" fontWeight="bold" sx={{ minWidth: '50px' }}>
 										Email:
@@ -107,7 +107,7 @@ export default function ContactsPreview({ contact }) {
 				</Card>
 
 				{/* Message Content */}
-				<Card>
+				<Card sx={{ maxWidth: 800, mx: 'auto' }}>
 					<CardContent>
 						<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
 							<SubjectIcon sx={{ mr: 1, color: 'primary.main' }} />
@@ -144,4 +144,4 @@ export default function ContactsPreview({ contact }) {
 			/>
 		</>
 	);
-} 
+};
