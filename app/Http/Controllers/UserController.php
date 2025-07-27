@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
@@ -50,6 +51,45 @@ class UserController extends Controller
 				'created_at' => $user->created_at->toDateTimeString(),
 			],
 		]);
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 */
+	public function edit(User $user)
+	{
+		Gate::authorize('update', $user);
+
+		return Inertia::render('Users/Edit', [
+			'user' => [
+				'id' => $user->id,
+				'name' => $user->name,
+				'email' => $user->email,
+				'role_id' => $user->role_id,
+				'is_active' => $user->is_active,
+			],
+			'roles' => \App\Models\Role::all(),
+		]);
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 */
+	public function update(UserRequest $request, User $user)
+	{
+		Gate::authorize('update', $user);
+
+		// Retrieve the validated input data
+		$validated = $request->validated();
+
+		// Only update password if it's provided
+		if (empty($validated['password'])) {
+			unset($validated['password']);
+		}
+
+		$user->update($validated);
+
+		return redirect()->route('users.show', $user)->with('success', 'User updated successfully');
 	}
 
 	/**

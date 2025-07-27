@@ -23,6 +23,14 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user): bool
+    {
+        return $user !== null && $user->role_id === 1;
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user): bool

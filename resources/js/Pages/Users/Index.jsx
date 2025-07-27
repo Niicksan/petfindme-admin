@@ -21,7 +21,7 @@ export default function UsersIndex({ users }) {
 
 	const rowActions = [
 		{ label: 'Open', onClick: (user) => router.get(`/users/${user.id}`) },
-		{ label: 'Edit', onClick: (user) => console.log('Edit user:', user) },
+		{ label: 'Edit', onClick: (user) => router.get(`/users/edit/${user.id}`) },
 		{ label: 'Delete', onClick: (user) => confirmUserDelete(user) },
 	];
 

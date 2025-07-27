@@ -64,7 +64,7 @@ export default function UsersPreview({ user }) {
 							variant="contained"
 							color="primary"
 							startIcon={<EditIcon sx={{ mr: 0 }} />}
-							onClick={() => console.log('Edit user:', user)}
+							onClick={() => router.get(`/users/edit/${user.id}`)}
 						>
 							Edit User
 						</Button>
@@ -181,7 +181,7 @@ export default function UsersPreview({ user }) {
 							}}
 						>
 							<Grid container spacing={2}>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12}>
 									<Typography variant="subtitle2" color="text.secondary">
 										User ID
 									</Typography>
@@ -189,7 +189,7 @@ export default function UsersPreview({ user }) {
 										#{user.id}
 									</Typography>
 								</Grid>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12}>
 									<Typography variant="subtitle2" color="text.secondary">
 										Account Type
 									</Typography>
