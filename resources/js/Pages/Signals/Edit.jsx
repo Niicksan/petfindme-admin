@@ -13,9 +13,6 @@ import {
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ConfirmationModal from '@/Components/ConfirmationModal';
-import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
 
 export default function SignalEdit({ signal, categories, cities, statuses, errors = {} }) {
 	const phoneRegex = new RegExp(/^\+?\d{5,13}$/);
@@ -36,17 +33,6 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 			status_id: signal.status_id || '',
 		},
 	});
-
-	const {
-		modalState,
-		closeModal,
-		confirmSignalAction,
-		handleConfirm
-	} = useConfirmationModal();
-
-	const handleDelete = () => {
-		confirmSignalAction('delete', signal);
-	};
 
 	const onSubmit = (data) => {
 		// Parse geolocation if it's a valid JSON string
@@ -81,18 +67,9 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 					>
 						Back to Signals
 					</Button>
-
-					<Button
-						variant="contained"
-						color="error"
-						startIcon={<DeleteIcon />}
-						onClick={handleDelete}
-					>
-						Delete Signal
-					</Button>
 				</Box>
 			</Box>
-			<Box sx={{ p: 3, pt: 0, maxWidth: 1200, mx: 'auto' }}>
+			<Box sx={{ p: 3, pt: 0, maxWidth: 800, mx: 'auto' }}>
 				{/* Edit Form */}
 				<Paper sx={{ p: 3 }}>
 					<Typography variant="h4" gutterBottom sx={{ textAlign: 'center', py: 1 }}>
@@ -301,15 +278,6 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 					</form>
 				</Paper>
 			</Box>
-			<ConfirmationModal
-				open={modalState.open}
-				onClose={closeModal}
-				onConfirm={handleConfirm}
-				title={modalState.title}
-				message={modalState.message}
-				confirmText={modalState.confirmText}
-				severity={modalState.severity}
-			/>
 		</>
 	);
 }
