@@ -3,14 +3,12 @@ import {
 	Box,
 	Paper,
 	Typography,
-	Button,
 	Divider,
 	Grid,
 	Card,
 	CardContent,
 	Chip,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -23,6 +21,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ConfirmationModal from '@/Components/ConfirmationModal';
 import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
+import ActionBar from '@/Components/ActionBar';
 
 export default function UsersPreview({ user }) {
 	const {
@@ -44,41 +43,32 @@ export default function UsersPreview({ user }) {
 		return status === 'Active' ? <CheckCircleIcon /> : <CancelIcon />;
 	};
 
+	const actionButtons = [
+		{
+			label: 'Edit User',
+			color: 'primary',
+			startIcon: <EditIcon sx={{ mr: 0 }} />,
+			onClick: () => router.get(`/users/edit/${user.id}`)
+		},
+		{
+			label: 'Delete User',
+			color: 'error',
+			startIcon: <DeleteIcon sx={{ mr: 0 }} />,
+			onClick: handleDelete
+		}
+	];
+
 	return (
 		<>
 			<Head title={`User - ${user.name}`} />
 
 			<Box sx={{ p: 2 }}>
 				{/* Header */}
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-					<Button
-						variant="outlined"
-						startIcon={<ArrowBackIcon sx={{ mr: 0 }} />}
-						onClick={() => router.get('/users')}
-					>
-						Back to Users
-					</Button>
-
-					<Box sx={{ display: 'flex', gap: 2 }}>
-						<Button
-							variant="contained"
-							color="primary"
-							startIcon={<EditIcon sx={{ mr: 0 }} />}
-							onClick={() => router.get(`/users/edit/${user.id}`)}
-						>
-							Edit User
-						</Button>
-
-						<Button
-							variant="contained"
-							color="error"
-							startIcon={<DeleteIcon sx={{ mr: 0 }} />}
-							onClick={handleDelete}
-						>
-							Delete User
-						</Button>
-					</Box>
-				</Box>
+				<ActionBar
+					backUrl="/users"
+					backLabel="Back to Users"
+					actions={actionButtons}
+				/>
 
 				{/* User Details Card */}
 				<Card sx={{ mb: 3, maxWidth: 800, mx: 'auto' }}>

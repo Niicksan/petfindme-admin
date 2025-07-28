@@ -5,14 +5,12 @@ import {
 	Box,
 	Paper,
 	Typography,
-	Button,
 	Divider,
 	Grid,
 	Card,
 	CardContent,
 	Chip,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -31,6 +29,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ConfirmationModal from '@/Components/ConfirmationModal';
 import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
+import ActionBar from '@/Components/ActionBar';
 import { Map } from '@/Components/Map';
 
 export default function SignalsPreview({ signal, images: signalImages }) {
@@ -93,70 +92,49 @@ export default function SignalsPreview({ signal, images: signalImages }) {
 		}
 	};
 
+	const actionButtons = [
+		{
+			label: 'Edit Signal',
+			color: 'primary',
+			startIcon: <EditIcon sx={{ mr: 0 }} />,
+			onClick: () => router.get(`/signals/edit/${signal.id}`)
+		},
+		...(signal.status.name === 'Активен' ? [{
+			label: 'Deactivate',
+			color: 'warning',
+			startIcon: <VisibilityOffIcon sx={{ mr: 0 }} />,
+			onClick: () => confirmSignalAction('deactivate', signal)
+		}] : [{
+			label: 'Activate',
+			color: 'success',
+			startIcon: <VisibilityIcon sx={{ mr: 0 }} />,
+			onClick: () => confirmSignalAction('activate', signal)
+		}]),
+		{
+			label: 'Archive',
+			color: 'secondary',
+			startIcon: <ArchiveIcon sx={{ mr: 0 }} />,
+			onClick: () => confirmSignalAction('archive', signal)
+		},
+		{
+			label: 'Delete',
+			color: 'error',
+			startIcon: <DeleteIcon sx={{ mr: 0 }} />,
+			onClick: () => confirmSignalAction('delete', signal)
+		}
+	];
+
 	return (
 		<>
 			<Head title={`Signal - ${signal.title}`} />
 
 			<Box sx={{ p: 2, mt: 2 }}>
 				{/* Header */}
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-					<Button
-						variant="outlined"
-						startIcon={<ArrowBackIcon sx={{ mr: 0 }} />}
-						onClick={() => router.get('/signals')}
-					>
-						Back to Signals
-					</Button>
-
-					<Box sx={{ display: 'flex', gap: 2 }}>
-						<Button
-							variant="contained"
-							color="primary"
-							startIcon={<EditIcon sx={{ mr: 0 }} />}
-							onClick={() => router.get(`/signals/edit/${signal.id}`)}
-						>
-							Edit Signal
-						</Button>
-
-						{signal.status.name === 'Активен' ? (
-							<Button
-								variant="contained"
-								color="warning"
-								startIcon={<VisibilityOffIcon sx={{ mr: 0 }} />}
-								onClick={() => confirmSignalAction('deactivate', signal)}
-							>
-								Deactivate
-							</Button>
-						) : (
-							<Button
-								variant="contained"
-								color="success"
-								startIcon={<VisibilityIcon sx={{ mr: 0 }} />}
-								onClick={() => confirmSignalAction('activate', signal)}
-							>
-								Activate
-							</Button>
-						)}
-
-						<Button
-							variant="contained"
-							color="secondary"
-							startIcon={<ArchiveIcon sx={{ mr: 0 }} />}
-							onClick={() => confirmSignalAction('archive', signal)}
-						>
-							Archive
-						</Button>
-
-						<Button
-							variant="contained"
-							color="error"
-							startIcon={<DeleteIcon sx={{ mr: 0 }} />}
-							onClick={() => confirmSignalAction('delete', signal)}
-						>
-							Delete
-						</Button>
-					</Box>
-				</Box>
+				<ActionBar
+					backUrl="/signals"
+					backLabel="Back to Signals"
+					actions={actionButtons}
+				/>
 
 				<Grid container spacing={3} sx={{ display: 'flex', flexDirection: 'column', maxWidth: 800, mx: 'auto' }}>
 					{/* Signal Details Card */}

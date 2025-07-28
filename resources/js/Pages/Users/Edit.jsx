@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
+import ActionBar from '@/Components/ActionBar';
 
 export default function Edit({ auth, user, roles, errors = {} }) {
 	const {
@@ -50,15 +51,10 @@ export default function Edit({ auth, user, roles, errors = {} }) {
 			<Head title={`Edit User - ${user.name}`} />
 
 			{/* Header */}
-			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-				<Button
-					variant="outlined"
-					startIcon={<ArrowBackIcon sx={{ mr: 0 }} />}
-					onClick={() => router.get('/users')}
-				>
-					Back to Users
-				</Button>
-			</Box>
+			<ActionBar
+				backUrl="/users"
+				backLabel="Back to Users"
+			/>
 
 			<Box sx={{ p: 2 }}>
 				<Paper sx={{ p: 3, maxWidth: 600, mx: 'auto' }}>

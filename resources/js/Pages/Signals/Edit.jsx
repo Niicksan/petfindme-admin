@@ -12,7 +12,7 @@ import {
 	Button,
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ActionBar from '@/Components/ActionBar';
 
 export default function SignalEdit({ signal, categories, cities, statuses, errors = {} }) {
 	const phoneRegex = new RegExp(/^\+?\d{5,13}$/);
@@ -57,18 +57,10 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 	return (
 		<>
 			<Head title={`Edit Signal - ${signal.title}`} />
-			<Box sx={{ p: 2, pb: 0 }}>
-				{/* Header */}
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-					<Button
-						variant="outlined"
-						startIcon={<ArrowBackIcon />}
-						onClick={() => router.get('/signals')}
-					>
-						Back to Signals
-					</Button>
-				</Box>
-			</Box>
+			<ActionBar
+				backUrl="/signals"
+				backLabel="Back to Signals"
+			/>
 			<Box sx={{ p: 3, pt: 0, maxWidth: 800, mx: 'auto' }}>
 				{/* Edit Form */}
 				<Paper sx={{ p: 3 }}>
