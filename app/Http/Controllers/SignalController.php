@@ -46,7 +46,33 @@ class SignalController extends Controller
         Gate::authorize('view', $signal);
 
         return Inertia::render('Signals/Preview', [
-            'signal' => $signal,
+            'signal' => [
+                'id' => $signal->id,
+                'title' => $signal->title,
+                'contact_name' => $signal->contact_name,
+                'phone' => $signal->phone,
+                'geolocation' => $signal->geolocation,
+                'description' => $signal->description,
+                'created_at' => $signal->created_at->toDateTimeString(),
+                'user' => $signal->user ? [
+                    'name' => $signal->user->name,
+                    'email' => $signal->user->email,
+                ] : null,
+                'category' => $signal->category ? [
+                    'name' => $signal->category->name,
+                ] : null,
+                'city' => $signal->city ? [
+                    'name' => $signal->city->name,
+                ] : null,
+                'status' => $signal->status ? [
+                    'name' => $signal->status->name,
+                ] : null,
+            ],
+            'images' => $signal->images->map(function ($image) {
+                return [
+                    'path' => $image->path,
+                ];
+            }),
         ]);
     }
 
@@ -80,6 +106,9 @@ class SignalController extends Controller
         return redirect()->route('signals.index');
     }
 
+    /**
+     * Activate the specified resource.
+     */
     public function activate(Signal $signal)
     {
         Gate::authorize('activate', $signal);
@@ -99,12 +128,15 @@ class SignalController extends Controller
 
             $signal->update($updateData);
 
-            return redirect(route('signals.index'))->with('success', 'Signal activated successfully');
+            return $this->redirectOnSuccess($signal, 'Signal activated successfully');
         } catch (\Exception $e) {
-            return redirect(route('signals.index'))->with('error', 'Failed to activate signal. Please try again.');
+            return $this->redirectOnError($signal, 'Failed to activate signal. Please try again.');
         }
     }
 
+    /**
+     * Deactivate the specified resource.
+     */
     public function deactivate(Signal $signal)
     {
         Gate::authorize('deactivate', $signal);
@@ -124,12 +156,15 @@ class SignalController extends Controller
 
             $signal->update($updateData);
 
-            return redirect()->route('signals.index')->with('success', 'Signal deactivated successfully');
+            return $this->redirectOnSuccess($signal, 'Signal deactivated successfully');
         } catch (\Exception $e) {
-            return redirect()->route('signals.index')->with('error', 'Failed to deactivate signal. Please try again.');
+            return $this->redirectOnError($signal, 'Failed to deactivate signal. Please try again.');
         }
     }
 
+    /**
+     * Archive the specified resource.
+     */
     public function archive(Signal $signal)
     {
         Gate::authorize('archive', $signal);
@@ -137,12 +172,15 @@ class SignalController extends Controller
         try {
             $signal->update(['status_id' => 3, 'archived_at' => now()]);
 
-            return redirect(route('signals.index'))->with('success', 'Signal archived successfully');
+            return $this->redirectOnSuccess($signal, 'Signal archived successfully');
         } catch (\Exception $e) {
-            return redirect(route('signals.index'))->with('error', 'Failed to archive signal. Please try again.');
+            return $this->redirectOnError($signal, 'Failed to archive signal. Please try again.');
         }
     }
 
+    /**
+     * Soft delete the specified resource.
+     */
     public function softDelete(Signal $signal)
     {
         Gate::authorize('delete', $signal);
@@ -154,5 +192,35 @@ class SignalController extends Controller
         } catch (\Exception $e) {
             return redirect(route('signals.index'))->with('error', 'Failed to soft delete signal. Please try again.');
         }
+    }
+
+    /**
+     * Helper method to redirect based on previous URL
+     */
+    private function redirectOnSuccess(Signal $signal, string $successMessage, string $errorMessage = null)
+    {
+        $previousUrl = url()->previous();
+        $previewRoute = route('signals.show', $signal->id);
+
+        if ($previousUrl === $previewRoute) {
+            return redirect($previewRoute)->with('success', $successMessage);
+        }
+
+        return redirect(route('signals.index'))->with('success', $successMessage);
+    }
+
+    /**
+     * Helper method to redirect on error based on previous URL
+     */
+    private function redirectOnError(Signal $signal, string $errorMessage)
+    {
+        $previousUrl = url()->previous();
+        $previewRoute = route('signals.show', $signal->id);
+
+        if ($previousUrl === $previewRoute) {
+            return redirect($previewRoute)->with('error', $errorMessage);
+        }
+
+        return redirect(route('signals.index'))->with('error', $errorMessage);
     }
 }

@@ -16,6 +16,8 @@ import {
 	Menu,
 	MenuItem,
 } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
@@ -197,14 +199,18 @@ export default function DataTable({
 														<MenuItem
 															key={item.is_active ? 'Deactivate' : 'Activate'}
 															onClick={() => handleActionClick(action, item)}
+															sx={{ color: item.is_active ? 'warning.main' : 'success.main' }}
 														>
+															{item.is_active ? <VisibilityOffIcon sx={{ mr: 0.8 }} /> : <VisibilityIcon sx={{ mr: 0.8 }} />}
 															{item.is_active ? 'Deactivate' : 'Activate'}
 														</MenuItem>
 													) : (
 														<MenuItem
 															key={action.label}
+															sx={{ color: action.color }}
 															onClick={() => handleActionClick(action, item)}
 														>
+															{action.icon}
 															{action.label}
 														</MenuItem>
 													)))}

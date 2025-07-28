@@ -25,6 +25,8 @@ export default function ConfirmationModal({
 				return 'error';
 			case 'warning':
 				return 'warning';
+			case 'secondary':
+				return 'secondary';
 			case 'success':
 				return 'success';
 			default:

@@ -86,7 +86,7 @@ export const useConfirmationModal = () => {
 				title: 'Archive Signal',
 				message: `Are you sure you want to archive the signal "${signal.title}"?`,
 				confirmText: 'Archive',
-				severity: 'warning'
+				severity: 'secondary'
 			}),
 			delete: (signal) => ({
 				action: 'delete',

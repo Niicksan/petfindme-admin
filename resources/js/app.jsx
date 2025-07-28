@@ -16,6 +16,7 @@ const adminRoutes = [
     'Users/Preview',
     'Users/Edit',
     'Signals/Index',
+    'Signals/Preview',
     'Signals/Edit',
     'Contacts/Index',
     'Contacts/Preview',
