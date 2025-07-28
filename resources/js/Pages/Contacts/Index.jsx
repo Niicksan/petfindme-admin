@@ -1,4 +1,6 @@
 import { Head, router } from '@inertiajs/react';
+import LaunchIcon from '@mui/icons-material/Launch';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DataTable from '@/Components/DataTable';
 import ConfirmationModal from '@/Components/ConfirmationModal';
 import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
@@ -24,8 +26,17 @@ export default function ContactsIndex({ contacts }) {
 	];
 
 	const rowActions = [
-		{ label: 'Open', onClick: (contact) => router.get(`/contacts/${contact.id}`) },
-		{ label: 'Delete', onClick: (contact) => confirmContactDelete(contact) },
+		{
+			label: 'Open',
+			icon: <LaunchIcon sx={{ mr: 0.8 }} />,
+			onClick: (contact) => router.get(`/contacts/${contact.id}`)
+		},
+		{
+			label: 'Delete',
+			color: 'error.main',
+			icon: <DeleteIcon sx={{ mr: 0.8 }} />,
+			onClick: (contact) => confirmContactDelete(contact)
+		},
 	];
 
 	return (

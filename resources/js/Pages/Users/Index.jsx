@@ -1,4 +1,7 @@
 import { Head, router } from '@inertiajs/react';
+import LaunchIcon from '@mui/icons-material/Launch';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DataTable from '@/Components/DataTable';
 import ConfirmationModal from '@/Components/ConfirmationModal';
 import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
@@ -20,9 +23,23 @@ export default function UsersIndex({ users }) {
 	];
 
 	const rowActions = [
-		{ label: 'Open', onClick: (user) => router.get(`/users/${user.id}`) },
-		{ label: 'Edit', onClick: (user) => router.get(`/users/edit/${user.id}`) },
-		{ label: 'Delete', onClick: (user) => confirmUserDelete(user) },
+		{
+			label: 'Open',
+			icon: <LaunchIcon sx={{ mr: 0.8 }} />,
+			onClick: (user) => router.get(`/users/${user.id}`)
+		},
+		{
+			label: 'Edit',
+			color: 'info.main',
+			icon: <EditIcon sx={{ mr: 0.8 }} />,
+			onClick: (user) => router.get(`/users/edit/${user.id}`)
+		},
+		{
+			label: 'Delete',
+			color: 'error.main',
+			icon: <DeleteIcon sx={{ mr: 0.8 }} />,
+			onClick: (user) => confirmUserDelete(user)
+		},
 	];
 
 	return (
