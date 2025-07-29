@@ -43,6 +43,10 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Logout route (excluded from CSRF protection)
+Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
+
 // Error pages
 Route::get('/403', function () {
     return Inertia::render('Errors/403');

@@ -1,6 +1,6 @@
 "use client";
-
-import React, { useState } from "react";
+import { router } from '@inertiajs/react';
+import { useState } from "react";
 import { Link } from "@inertiajs/react";
 import {
     AppBar,
@@ -153,7 +153,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <MenuItem component={Link} href="/profile" onClick={handleClose}>
                                 <AccountCircleIcon sx={{ mr: 1 }} /> Profile
                             </MenuItem>
-                            <MenuItem component={Link} href="/logout" onClick={handleClose}>
+                            <MenuItem component={Link} href="/logout" method="post" onClick={handleClose}>
                                 <LogoutIcon sx={{ mr: 1 }} /> Logout
                             </MenuItem>
                         </Menu>
