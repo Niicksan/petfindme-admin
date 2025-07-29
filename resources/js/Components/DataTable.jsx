@@ -143,7 +143,7 @@ export default function DataTable({
 			<Typography variant="h4" gutterBottom>
 				{title}
 			</Typography>
-			<TableContainer component={Paper}>
+			<TableContainer component={Paper} sx={{ maxWidth: 1920, mx: 'auto' }}>
 				<Table>
 					<TableHead>
 						<TableRow sx={{ backgroundColor: '#f5f5f5' }}>
