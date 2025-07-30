@@ -1,24 +1,32 @@
+import { useForm, Controller } from 'react-hook-form';
 import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Box, Typography } from '@mui/material';
+import { Head, Link, router } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false,
+export default function Login({ status, canResetPassword, errors = {} }) {
+    const emailRegex = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i);
+    const {
+        control,
+        handleSubmit,
+        formState: { errors: formErrors, isSubmitting },
+    } = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+            remember: false,
+        },
+        mode: 'onChange',
     });
 
-    const submit = (e) => {
+    const onLoginSubmit = (data, e) => {
         e.preventDefault();
+        const submitData = { ...data };
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        router.post('login', submitData);
     };
 
     return (
@@ -31,70 +39,95 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <form onSubmit={submit}>
-                <div>
+            <Box component="form" onSubmit={handleSubmit(onLoginSubmit)}>
+                <Box sx={{ mt: 2, mb: 3 }}>
                     <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
+                    <Controller
                         name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+                        control={control}
+                        rules={{
+                            required: 'Email is required',
+                            pattern: {
+                                value: emailRegex,
+                                message: 'Enter a valid email address'
+                            },
+                        }}
+                        render={({ field }) => (
+                            <TextInput
+                                {...field}
+                                error={!!(formErrors.email)}
+                                id="email"
+                                type="email"
+                                autoComplete="username"
+                                size="small"
+                                sx={{ mt: 1, color: 'white' }}
+                            />
+                        )}
                     />
+                    <InputError message={formErrors.email?.message} />
+                </Box>
 
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
+                <Box sx={{ mt: 2, mb: 0 }}>
                     <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
+                    <Controller
                         name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        control={control}
+                        rules={{
+                            required: 'Password is required',
+                            minLength: { value: 5, message: 'Password must be at least 5 characters long' },
+                        }}
+                        render={({ field }) => (
+                            <TextInput
+                                {...field}
+                                error={!!(formErrors.password || errors.password)}
+                                id="password"
+                                type="password"
+                                autoComplete="current-password"
+                                size="small"
+                                password={true}
+                                sx={{ mt: 1, color: 'white' }}
+                            />)}
                     />
+                    <InputError message={formErrors.password?.message} />
+                </Box>
 
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
+                <InputError message={errors.email || errors.password} />
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
+                <Box sx={{ mt: 2 }}>
+                    <Controller
+                        id="remember-me"
+                        name="remember"
+                        control={control}
+                        render={({ field }) => (
+                            <label className="flex items-center">
+                                <Checkbox
+                                    {...field}
+                                    checked={field.value}
+                                    onChange={(e) => field.onChange(e.target.checked)}
+                                />
+                                <Typography variant="p" component="span" sx={{ color: 'white' }}>
+                                    Remember me
+                                </Typography>
+                            </label>
+                        )}
+                    />
+                </Box>
 
-                <div className="mt-4 flex items-center justify-end">
+                <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mt: 1, mb: 2 }}>
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                            className="ms-2 text-sm text-white"
                         >
                             Forgot your password?
                         </Link>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <PrimaryButton sx={{ ml: 2 }} type="submit" disabled={isSubmitting}>
                         Log in
                     </PrimaryButton>
-                </div>
-            </form>
+                </Box>
+            </Box>
         </>
     );
-}
+};

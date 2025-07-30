@@ -1,20 +1,31 @@
+import { Button } from '@mui/material';
+
 export default function PrimaryButton({
     className = "",
     disabled,
     children,
+    sx,
     ...props
 }) {
     return (
-        <button
+        <Button
             {...props}
-            className={
-                `rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
-                    disabled && "opacity-25"
-                } ` + className
-            }
+            variant="contained"
             disabled={disabled}
+            sx={{
+                backgroundColor: '#6366f1',
+                color: 'white',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.375rem',
+                textTransform: 'none',
+                backgroundColor: '#4f46e5',
+                outlineOffset: '2px',
+                ...sx
+            }}
         >
             {children}
-        </button>
+        </Button>
     );
-}
+};

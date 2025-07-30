@@ -1,10 +1,12 @@
+import { Typography } from "@mui/material";
+
 export default function InputError({ message, className = '', ...props }) {
     return message ? (
-        <p
+        <Typography
             {...props}
-            className={'text-sm text-red-600 dark:text-red-400 ' + className}
-        >
+            component={"p"}
+            sx={{ color: '#d32f2f', textAlign: 'left', pt: 1 }}>
             {message}
-        </p>
+        </Typography>
     ) : null;
 }

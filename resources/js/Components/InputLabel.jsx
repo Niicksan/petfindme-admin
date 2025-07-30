@@ -1,3 +1,5 @@
+import { FormLabel } from '@mui/material';
+
 export default function InputLabel({
     value,
     className = '',
@@ -5,14 +7,17 @@ export default function InputLabel({
     ...props
 }) {
     return (
-        <label
+        <FormLabel
             {...props}
-            className={
-                `block text-sm font-medium text-gray-700 dark:text-gray-300 ` +
-                className
-            }
+            sx={{
+                color: 'white',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                display: 'block',
+                ...className
+            }}
         >
             {value ? value : children}
-        </label>
+        </FormLabel>
     );
-}
+};

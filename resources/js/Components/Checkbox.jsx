@@ -1,12 +1,19 @@
-export default function Checkbox({ className = '', ...props }) {
+import { Checkbox as MuiCheckbox } from '@mui/material';
+
+export default function Checkbox({ className = '', sx, ...props }) {
     return (
-        <input
+        <MuiCheckbox
             {...props}
-            type="checkbox"
-            className={
-                'rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800 ' +
-                className
-            }
+            sx={{
+                color: 'rgba(156, 163, 175, 0.5)',
+                '&.Mui-checked': {
+                    color: '#6366f1',
+                },
+                '&:hover': {
+                    backgroundColor: 'rgba(99, 102, 241, 0.04)',
+                },
+                ...sx
+            }}
         />
     );
 }
