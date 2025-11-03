@@ -21,6 +21,7 @@ class ContactFactory extends Factory
             'email' => fake()->safeEmail(),
             'subject' => fake()->sentence(4),
             'message' => fake()->paragraph(3),
+            'opened_at' => fake()->optional()->dateTime(),
         ];
     }
 }

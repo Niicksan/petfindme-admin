@@ -22,6 +22,7 @@ class ContactController extends Controller
                     'email' => $contact->email,
                     'subject' => $contact->subject,
                     'message' => $contact->message,
+                    'opened_at' => $contact->opened_at?->toDateTimeString(),
                     'created_at' => $contact->created_at->toDateTimeString(),
                 ];
             });
@@ -48,6 +49,20 @@ class ContactController extends Controller
                 'created_at' => $contact->created_at->toDateTimeString(),
             ],
         ]);
+    }
+
+    /**
+     * Mark the email as opened.
+     */
+    public function markAsOpened(Contact $contact)
+    {
+        Gate::authorize('view', $contact);
+
+        if ($contact->opened_at === null) {
+            $contact->update(['opened_at' => now()]);
+        }
+
+        return redirect()->route('contacts.show', $contact);
     }
 
     /**

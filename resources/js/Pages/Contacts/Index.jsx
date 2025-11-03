@@ -29,7 +29,14 @@ export default function ContactsIndex({ contacts }) {
 		{
 			label: 'Open',
 			icon: <LaunchIcon sx={{ mr: 0.8 }} />,
-			onClick: (contact) => router.get(`/contacts/${contact.id}`)
+			onClick: (contact) => {
+				// Mark as opened if not already opened, then redirect to show page
+				if (!contact.opened_at) {
+					router.patch(`/contacts/opened/${contact.id}`);
+				} else {
+					router.get(`/contacts/${contact.id}`);
+				}
+			}
 		},
 		{
 			label: 'Delete',
@@ -38,6 +45,10 @@ export default function ContactsIndex({ contacts }) {
 			onClick: (contact) => confirmContactDelete(contact)
 		},
 	];
+
+	const rowStyle = (contact) => ({
+		backgroundColor: !contact.opened_at ? '#e3f2fd' : 'transparent'
+	});
 
 	return (
 		<>
@@ -48,6 +59,7 @@ export default function ContactsIndex({ contacts }) {
 				data={contacts.data}
 				pagination={contacts}
 				rowActions={rowActions}
+				rowStyle={rowStyle}
 			/>
 			<ConfirmationModal
 				open={modalState.open}

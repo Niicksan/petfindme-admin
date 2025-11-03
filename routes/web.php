@@ -36,6 +36,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('/signals/soft-delete/{signal}', [SignalController::class, 'softDelete'])->name('signals.soft-delete');
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+    Route::patch('/contacts/opened/{contact}', [ContactController::class, 'markAsOpened'])->name('contacts.opened');
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
 });
 
