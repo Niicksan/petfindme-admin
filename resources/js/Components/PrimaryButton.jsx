@@ -13,14 +13,13 @@ export default function PrimaryButton({
             variant="contained"
             disabled={disabled}
             sx={{
-                backgroundColor: '#6366f1',
+                backgroundColor: '#4f46e5',
                 color: 'white',
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 padding: '0.5rem 1rem',
                 borderRadius: '0.375rem',
                 textTransform: 'none',
-                backgroundColor: '#4f46e5',
                 outlineOffset: '2px',
                 ...sx
             }}
