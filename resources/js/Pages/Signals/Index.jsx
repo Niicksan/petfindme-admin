@@ -5,10 +5,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DataTable from '@/Components/DataTable';
+import FilterComponent from '@/Components/FilterComponent';
 import ConfirmationModal from '@/Components/ConfirmationModal';
 import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
 
-export default function SignalsIndex({ signals }) {
+export default function SignalsIndex({ signals, categories, cities, statuses, filters }) {
 	const {
 		modalState,
 		closeModal,
@@ -59,9 +60,50 @@ export default function SignalsIndex({ signals }) {
 		backgroundColor: signal.status === 'Изчакващ' ? '#e8f5e9' : 'transparent'
 	});
 
+	const filterConfig = [
+		{
+			key: 'title',
+			label: 'Title',
+			type: 'text',
+			placeholder: 'Search by title...'
+		},
+		{
+			key: 'category',
+			label: 'Category',
+			type: 'select',
+			options: categories?.map(category => ({
+				value: category.id,
+				label: category.name
+			})) || []
+		},
+		{
+			key: 'city',
+			label: 'City',
+			type: 'select',
+			options: cities?.map(city => ({
+				value: city.id,
+				label: city.name
+			})) || []
+		},
+		{
+			key: 'status',
+			label: 'Status',
+			type: 'select',
+			options: statuses?.map(status => ({
+				value: status.id,
+				label: status.name
+			})) || []
+		}
+	];
+
 	return (
 		<>
 			<Head title="Signals" />
+			<FilterComponent
+				filters={filterConfig}
+				initialFilters={filters}
+				title="Signal Filters"
+			/>
 			<DataTable
 				title="Signals"
 				columns={columns}

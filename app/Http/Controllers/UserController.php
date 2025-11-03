@@ -14,23 +14,55 @@ class UserController extends Controller
 		$perPage = request('per_page', 10);
 		$page = request('page', 1);
 
-		$users = User::with('role')
+		// Get filter parameters
+		$name = request('name');
+		$email = request('email');
+		$role = request('role');
+		$status = request('status');
+
+		$query = User::with('role')
 			->orderByDesc('id')
 			// ->where('role_id', '!=', 1) // exclude admin role
-			->select('id', 'name', 'email', 'role_id', 'is_active', 'created_at')
-			->paginate($perPage, ['*'], 'page', $page)
-			->through(function ($user) {
-				return [
-					'id' => $user->id,
-					'name' => $user->name,
-					'email' => $user->email,
-					'role' => $user->role ? $user->role->name : null,
-					'status' => $user->is_active ? 'Active' : 'Inactive',
-					'created_at' => $user->created_at->toDateTimeString(),
-				];
-			});
+			->select('id', 'name', 'email', 'role_id', 'is_active', 'created_at');
+
+		// Apply filters
+		if ($name) {
+			$query->where('name', 'like', '%' . $name . '%');
+		}
+
+		if ($email) {
+			$query->where('email', 'like', '%' . $email . '%');
+		}
+
+		if ($role) {
+			$query->where('role_id', $role);
+		}
+
+		if ($status !== null && $status !== '') {
+			$query->where('is_active', $status === 'Active' ? 1 : 0);
+		}
+
+		$users = $query->paginate($perPage, ['*'], 'page', $page);
+		$users->through(function ($user) {
+			return [
+				'id' => $user->id,
+				'name' => $user->name,
+				'email' => $user->email,
+				'role' => $user->role ? $user->role->name : null,
+				'status' => $user->is_active ? 'Active' : 'Inactive',
+				'created_at' => $user->created_at->toDateTimeString(),
+			];
+		});
+
 		return Inertia::render('Users/Index', [
 			'users' => $users,
+			'roles' => \App\Models\Role::all(),
+			'filters' => [
+				'name' => $name,
+				'email' => $email,
+				'role' => $role,
+				'status' => $status,
+			],
 		]);
 	}
 

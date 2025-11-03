@@ -17,24 +17,57 @@ class SignalController extends Controller
         $perPage = request('per_page', 10);
         $page = request('page', 1);
 
-        $signals = Signal::with(['user', 'category', 'city', 'status'])
-            ->orderByDesc('id')
-            ->paginate($perPage, ['*'], 'page', $page)
-            ->through(function ($signal) {
-                return [
-                    'id' => $signal->id,
-                    'title' => $signal->title,
-                    'user' => $signal->user ? $signal->user->name : null,
-                    'category' => $signal->category ? $signal->category->name : null,
-                    'city' => $signal->city ? $signal->city->name : null,
-                    'status' => $signal->status ? $signal->status->name : null,
-                    'is_active' => $signal->status && $signal->status->name === 'Активен',
-                    'created_at' => $signal->created_at->toDateTimeString(),
-                ];
-            });
+        // Get filter parameters
+        $title = request('title');
+        $category = request('category');
+        $city = request('city');
+        $status = request('status');
+
+        $query = Signal::with(['user', 'category', 'city', 'status'])
+            ->orderByDesc('id');
+
+        // Apply filters
+        if ($title) {
+            $query->where('title', 'like', '%' . $title . '%');
+        }
+
+        if ($category) {
+            $query->where('category_id', $category);
+        }
+
+        if ($city) {
+            $query->where('city_id', $city);
+        }
+
+        if ($status) {
+            $query->where('status_id', $status);
+        }
+
+        $signals = $query->paginate($perPage, ['*'], 'page', $page);
+        $signals->through(function ($signal) {
+            return [
+                'id' => $signal?->id,
+                'title' => $signal?->title,
+                'user' => $signal?->user?->name,
+                'category' => $signal?->category?->name,
+                'city' => $signal?->city?->name,
+                'status' => $signal?->status?->name,
+                'is_active' => $signal->status && $signal->status->name === 'Активен',
+                'created_at' => $signal->created_at->toDateTimeString(),
+            ];
+        });
 
         return Inertia::render('Signals/Index', [
             'signals' => $signals,
+            'categories' => \App\Models\Category::all(),
+            'cities' => \App\Models\City::all(),
+            'statuses' => \App\Models\Status::all(),
+            'filters' => [
+                'title' => $title,
+                'category' => $category,
+                'city' => $city,
+                'status' => $status,
+            ],
         ]);
     }
 

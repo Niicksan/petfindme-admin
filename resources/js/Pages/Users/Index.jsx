@@ -3,10 +3,11 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DataTable from '@/Components/DataTable';
+import FilterComponent from '@/Components/FilterComponent';
 import ConfirmationModal from '@/Components/ConfirmationModal';
 import { useConfirmationModal } from '@/Hooks/useConfirmationModal';
 
-export default function UsersIndex({ users }) {
+export default function UsersIndex({ users, roles, filters }) {
 	const {
 		modalState,
 		closeModal,
@@ -42,9 +43,47 @@ export default function UsersIndex({ users }) {
 		},
 	];
 
+	const filterConfig = [
+		{
+			key: 'name',
+			label: 'Name',
+			type: 'text',
+			placeholder: 'Search by name...'
+		},
+		{
+			key: 'email',
+			label: 'Email',
+			type: 'text',
+			placeholder: 'Search by email...'
+		},
+		{
+			key: 'role',
+			label: 'Role',
+			type: 'select',
+			options: roles?.map(role => ({
+				value: role.id,
+				label: role.name
+			})) || []
+		},
+		{
+			key: 'status',
+			label: 'Status',
+			type: 'select',
+			options: [
+				{ value: 'Active', label: 'Active' },
+				{ value: 'Inactive', label: 'Inactive' }
+			]
+		}
+	];
+
 	return (
 		<>
 			<Head title="Users" />
+			<FilterComponent
+				filters={filterConfig}
+				initialFilters={filters}
+				title="User Filters"
+			/>
 			<DataTable
 				title="Users"
 				columns={columns}
