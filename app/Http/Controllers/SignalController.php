@@ -23,8 +23,17 @@ class SignalController extends Controller
         $city = request('city');
         $status = request('status');
 
-        $query = Signal::with(['user', 'category', 'city', 'status'])
-            ->orderByDesc('id');
+        // Status ID 4 is 'Изтрит' (Deleted) - include soft-deleted records
+        $isDeletedStatus = $status && (int) $status === 4;
+
+        $query = Signal::with(['user', 'category', 'city', 'status']);
+
+        // Include soft-deleted records when filtering by deleted status
+        if ($isDeletedStatus) {
+            $query->withTrashed();
+        }
+
+        $query->orderByDesc('id');
 
         // Apply filters
         if ($title) {
