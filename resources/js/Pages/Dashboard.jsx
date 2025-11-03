@@ -5,7 +5,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import PetsIcon from '@mui/icons-material/Pets';
 import EmailIcon from '@mui/icons-material/Email';
 
-export default function Dashboard({ totalUsers, totalSignals, totalContacts, newSignals }) {
+export default function Dashboard({ totalUsers, totalSignals, totalContacts, newSignals, newEmails }) {
     const cards = [
         {
             title: 'Users',
@@ -28,6 +28,13 @@ export default function Dashboard({ totalUsers, totalSignals, totalContacts, new
             title: 'Emails',
             value: totalContacts,
             icon: <EmailIcon fontSize="large" color="primary" />,
+            extra:
+                <Typography
+                    variant="span"
+                    sx={{ mt: 1, color: newEmails > 0 ? '#4caf50' : 'text.secondary' }}
+                >
+                    ({newEmails} new)
+                </Typography>
         },
     ];
 

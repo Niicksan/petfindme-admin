@@ -15,12 +15,14 @@ class DashboardController extends Controller
 		$totalSignals = Signal::count();
 		$totalContacts = Contact::count();
 		$newSignals = Signal::where('status_id', 1)->count();
+		$newEmails = Contact::where('opened_at', null)->count();
 
 		return Inertia::render('Dashboard', [
 			'totalUsers' => $totalUsers,
 			'totalSignals' => $totalSignals,
 			'totalContacts' => $totalContacts,
 			'newSignals' => $newSignals,
+			'newEmails' => $newEmails,
 		]);
 	}
 }
