@@ -49,7 +49,7 @@ const navigation = [
         icon: <PetsIcon />,
     },
     {
-        name: "Contacts",
+        name: "Emails",
         route: "contacts.index",
         // route: "dashboard",
         icon: <EmailIcon />,
