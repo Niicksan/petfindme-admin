@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 import GroupIcon from '@mui/icons-material/Group';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -11,11 +11,13 @@ export default function Dashboard({ totalUsers, totalSignals, totalContacts, new
             title: 'Users',
             value: totalUsers,
             icon: <GroupIcon fontSize="large" color="primary" />,
+            route: '/users',
         },
         {
             title: 'Signals',
             value: totalSignals,
             icon: <PetsIcon fontSize="large" color="primary" />,
+            route: '/signals',
             extra:
                 <Typography
                     variant="span"
@@ -28,6 +30,7 @@ export default function Dashboard({ totalUsers, totalSignals, totalContacts, new
             title: 'Emails',
             value: totalContacts,
             icon: <EmailIcon fontSize="large" color="primary" />,
+            route: '/contacts',
             extra:
                 <Typography
                     variant="span"
@@ -50,6 +53,7 @@ export default function Dashboard({ totalUsers, totalSignals, totalContacts, new
                         <Grid key={card.title}>
                             <Card
                                 elevation={6}
+                                onClick={() => router.get(card.route)}
                                 sx={{
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -58,6 +62,11 @@ export default function Dashboard({ totalUsers, totalSignals, totalContacts, new
                                     p: 4,
                                     minWidth: 180,
                                     boxShadow: '0 6px 16px 0 rgba(0,0,0,0.18)',
+                                    cursor: 'pointer',
+                                    transition: 'box-shadow 0.3s ease-in-out',
+                                    '&:hover': {
+                                        boxShadow: '0 10px 24px 0 rgba(0,0,0,0.25)',
+                                    },
                                 }}
                             >
                                 <CardContent sx={{ flexGrow: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 0 }}>
