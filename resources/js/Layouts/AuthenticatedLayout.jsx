@@ -195,9 +195,12 @@ export default function AuthenticatedLayout({ header, children }) {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 3,
-                    width: { md: `calc(100% - ${drawerWidth}px)` },
+                    // width: { md: `calc(100% - ${drawerWidth}px)` },
+                    width: '100%',
+                    maxWidth: '1920px',
+                    mx: 'auto',
                     mt: 8,
+                    p: 3,
                 }}
             >
                 {header && <Box mb={2}>{header}</Box>}
