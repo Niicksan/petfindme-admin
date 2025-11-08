@@ -13,16 +13,14 @@ import {
 	TableRow,
 	Typography,
 	IconButton,
-	Menu,
-	MenuItem,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import ActionsMenu from '@/Components/ActionsMenu';
 
 export default function DataTable({
 	title,
@@ -51,7 +49,6 @@ export default function DataTable({
 		setAnchorEl(null);
 		setMenuItemId(null);
 	};
-
 
 	function TablePaginationActions(props) {
 		const theme = useTheme();
@@ -109,7 +106,7 @@ export default function DataTable({
 				</IconButton>
 			</Box>
 		);
-	}
+	};
 
 	const handleChangePage = (event, newPage) => {
 		if (isServerPagination) {
@@ -132,10 +129,29 @@ export default function DataTable({
 	};
 
 	const handleActionClick = (action, item) => {
-		handleMenuClose();
-		if (action.onClick) {
+		if (action.onClick && item) {
 			action.onClick(item);
 		}
+	};
+
+	const getActionsForItem = (item) => {
+		return rowActions.map((action) => {
+			if (action.label === 'Activate/Deactivate') {
+				return {
+					key: item.is_active ? 'Deactivate' : 'Activate',
+					label: item.is_active ? 'Deactivate' : 'Activate',
+					icon: item.is_active ? <VisibilityOffIcon /> : <VisibilityIcon />,
+					color: item.is_active ? 'warning.main' : 'success.main',
+					onClick: action.onClick,
+					item: item,
+				};
+			}
+			return {
+				...action,
+				key: action.label,
+				item: item,
+			};
+		});
 	};
 
 	return (
@@ -177,44 +193,20 @@ export default function DataTable({
 									))}
 									{rowActions.length > 0 && (
 										<TableCell align="right">
-											<IconButton
-												aria-label="more"
-												aria-controls={`menu-${item.id}`}
-												aria-haspopup="true"
-												onClick={(e) => {
-													e.stopPropagation();
-													handleMenuOpen(e, item.id);
-												}}
-											>
-												<MoreVertIcon />
-											</IconButton>
-											<Menu
-												id={`menu-${item.id}`}
-												anchorEl={anchorEl}
+											<ActionsMenu
+												actions={getActionsForItem(item)}
+												ariaLabel="row actions"
+												menuId={`menu-${item.id}`}
 												open={menuItemId === item.id}
+												anchorEl={anchorEl}
+												onOpen={(e) => handleMenuOpen(e, item.id)}
 												onClose={handleMenuClose}
-											>
-												{rowActions.map((action) => (
-													action.label === 'Activate/Deactivate' ? (
-														<MenuItem
-															key={item.is_active ? 'Deactivate' : 'Activate'}
-															onClick={() => handleActionClick(action, item)}
-															sx={{ color: item.is_active ? 'warning.main' : 'success.main' }}
-														>
-															{item.is_active ? <VisibilityOffIcon sx={{ mr: 0.8 }} /> : <VisibilityIcon sx={{ mr: 0.8 }} />}
-															{item.is_active ? 'Deactivate' : 'Activate'}
-														</MenuItem>
-													) : (
-														<MenuItem
-															key={action.label}
-															sx={{ color: action.color }}
-															onClick={() => handleActionClick(action, item)}
-														>
-															{action.icon}
-															{action.label}
-														</MenuItem>
-													)))}
-											</Menu>
+												onActionClick={handleActionClick}
+												iconColor="default"
+												iconButtonProps={{
+													onClick: (e) => e.stopPropagation(),
+												}}
+											/>
 										</TableCell>
 									)}
 								</TableRow>
@@ -234,4 +226,4 @@ export default function DataTable({
 			/>
 		</Box>
 	);
-} 
+};

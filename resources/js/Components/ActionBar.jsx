@@ -1,48 +1,26 @@
-import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import {
 	Box,
 	Button,
-	IconButton,
-	Menu,
-	MenuItem,
-	ListItemIcon,
-	ListItemText,
 	useMediaQuery,
 	useTheme,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ActionsMenu from '@/Components/ActionsMenu';
 
 export default function ActionBar({
 	backUrl,
 	backLabel = 'Back',
 	actions = [],
-	onBackClick
 }) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-	const [anchorEl, setAnchorEl] = useState(null);
-	const open = Boolean(anchorEl);
 
 	const handleBackClick = () => {
-		if (onBackClick) {
-			onBackClick();
-		} else if (backUrl) {
-			router.get(backUrl);
-		}
-	};
-
-	const handleMenuClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handleMenuClose = () => {
-		setAnchorEl(null);
+		router.get(backUrl);
 	};
 
 	const handleActionClick = (action) => {
-		handleMenuClose();
 		if (action.onClick) {
 			action.onClick();
 		}
@@ -81,57 +59,12 @@ export default function ActionBar({
 
 					{/* Mobile: Show three-dot menu */}
 					{isMobile && (
-						<>
-							<IconButton
-								aria-label="more actions"
-								aria-controls={open ? 'action-menu' : undefined}
-								aria-haspopup="true"
-								aria-expanded={open ? 'true' : undefined}
-								onClick={handleMenuClick}
-								color="primary"
-							>
-								<MoreVertIcon />
-							</IconButton>
-							<Menu
-								id="action-menu"
-								anchorEl={anchorEl}
-								open={open}
-								onClose={handleMenuClose}
-								MenuListProps={{
-									'aria-labelledby': 'action-menu-button',
-								}}
-								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'right',
-								}}
-								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'right',
-								}}
-							>
-								{actions?.map((action, index) => {
-									const actionColor = action.color || 'primary';
-									const colorValue = theme.palette[actionColor]?.main || theme.palette.text.primary;
-
-									return (
-										<MenuItem
-											key={index}
-											onClick={() => handleActionClick(action)}
-											disabled={action.disabled}
-										>
-											{action.startIcon && (
-												<ListItemIcon sx={{ minWidth: 36, color: colorValue }}>
-													{action.startIcon}
-												</ListItemIcon>
-											)}
-											<ListItemText sx={{ color: colorValue }}>
-												{action.label}
-											</ListItemText>
-										</MenuItem>
-									);
-								})}
-							</Menu>
-						</>
+						<ActionsMenu
+							actions={actions}
+							ariaLabel="more actions"
+							menuId="action-menu"
+							onActionClick={handleActionClick}
+						/>
 					)}
 				</>
 			)}
