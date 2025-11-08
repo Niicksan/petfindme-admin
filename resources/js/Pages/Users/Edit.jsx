@@ -14,8 +14,18 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
 import ActionBar from '@/Components/ActionBar';
+import { useBackNavigation } from '@/Hooks/useBackNavigation';
 
 export default function Edit({ auth, user, roles, errors = {} }) {
+	const { backUrl, backLabel } = useBackNavigation({
+		resourceType: 'users',
+		resourceId: user.id,
+		labels: {
+			preview: 'Back to Preview',
+			index: 'Back to Users'
+		}
+	});
+
 	const {
 		control,
 		handleSubmit,
@@ -43,7 +53,7 @@ export default function Edit({ auth, user, roles, errors = {} }) {
 	};
 
 	const handleCancel = () => {
-		router.get('/users');
+		router.get(backUrl);
 	};
 
 	return (
@@ -52,8 +62,8 @@ export default function Edit({ auth, user, roles, errors = {} }) {
 
 			{/* Header */}
 			<ActionBar
-				backUrl="/users"
-				backLabel="Back to Users"
+				backUrl={backUrl}
+				backLabel={backLabel}
 			/>
 
 			<Box sx={{ p: 2 }}>

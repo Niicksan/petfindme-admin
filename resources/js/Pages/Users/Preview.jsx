@@ -48,7 +48,7 @@ export default function UsersPreview({ user }) {
 			label: 'Edit User',
 			color: 'primary',
 			startIcon: <EditIcon sx={{ mr: 0 }} />,
-			onClick: () => router.get(`/users/edit/${user.id}`)
+			onClick: () => router.get(`/users/edit/${user.id}?from=preview`)
 		},
 		{
 			label: 'Delete User',

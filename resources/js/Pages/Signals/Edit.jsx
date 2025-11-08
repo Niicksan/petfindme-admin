@@ -13,9 +13,19 @@ import {
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
 import ActionBar from '@/Components/ActionBar';
+import { useBackNavigation } from '@/Hooks/useBackNavigation';
 
 export default function SignalEdit({ signal, categories, cities, statuses, errors = {} }) {
 	const phoneRegex = new RegExp(/^\+?\d{5,13}$/);
+	const { backUrl, backLabel } = useBackNavigation({
+		resourceType: 'signals',
+		resourceId: signal.id,
+		labels: {
+			preview: 'Back to Preview',
+			index: 'Back to Signals'
+		}
+	});
+
 	const {
 		control,
 		handleSubmit,
@@ -51,15 +61,15 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 	};
 
 	const handleCancel = () => {
-		router.get('/signals');
+		router.get(backUrl);
 	};
 
 	return (
 		<>
 			<Head title={`Edit Signal - ${signal.title}`} />
 			<ActionBar
-				backUrl="/signals"
-				backLabel="Back to Signals"
+				backUrl={backUrl}
+				backLabel={backLabel}
 			/>
 			<Box sx={{ p: 3, pt: 0, maxWidth: 800, mx: 'auto' }}>
 				{/* Edit Form */}

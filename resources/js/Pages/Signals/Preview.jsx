@@ -97,7 +97,7 @@ export default function SignalsPreview({ signal, images: signalImages }) {
 			label: 'Edit Signal',
 			color: 'primary',
 			startIcon: <EditIcon sx={{ mr: 0 }} />,
-			onClick: () => router.get(`/signals/edit/${signal.id}`)
+			onClick: () => router.get(`/signals/edit/${signal.id}?from=preview`)
 		},
 		...(signal.status.name === 'Активен' ? [{
 			label: 'Deactivate',

@@ -36,7 +36,7 @@ export default function SignalsIndex({ signals, categories, cities, statuses, fi
 			label: 'Edit',
 			color: 'info.main',
 			icon: <EditIcon sx={{ mr: 0.8 }} />,
-			onClick: (signal) => router.get(`/signals/edit/${signal.id}`)
+			onClick: (signal) => router.get(`/signals/edit/${signal.id}?from=index`)
 		},
 		{
 			label: 'Activate/Deactivate',

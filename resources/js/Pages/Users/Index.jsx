@@ -33,7 +33,7 @@ export default function UsersIndex({ users, roles, filters }) {
 			label: 'Edit',
 			color: 'info.main',
 			icon: <EditIcon sx={{ mr: 0.8 }} />,
-			onClick: (user) => router.get(`/users/edit/${user.id}`)
+			onClick: (user) => router.get(`/users/edit/${user.id}?from=index`)
 		},
 		{
 			label: 'Delete',
