@@ -28,7 +28,7 @@ export const useBackNavigation = ({ resourceType, resourceId, labels = {} }) => 
 			setBackUrl(`/${resourceType}`);
 			setBackLabel(labels.index);
 		}
-	}, [resourceType, resourceId, labels]);
+	}, [resourceType, resourceId, labels.preview, labels.index]);
 
 	return { backUrl, backLabel };
 };
