@@ -100,7 +100,12 @@ class UserController extends Controller
 				'role_id' => $user->role_id,
 				'is_active' => $user->is_active,
 			],
-			'roles' => \App\Models\Role::all(),
+			'roles' => \App\Models\Role::all()->map(function ($status) {
+				return [
+					'id' => $status->id,
+					'name' => $status->name,
+				];
+			}),
 		]);
 	}
 
