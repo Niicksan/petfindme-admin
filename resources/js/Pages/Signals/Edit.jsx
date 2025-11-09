@@ -15,6 +15,7 @@ import {
 import { Save, Cancel } from '@mui/icons-material';
 import ActionBar from '@/Components/ActionBar';
 import { Map } from '@/Components/Map';
+import SignalImageManager from '@/Components/SignalImageManager';
 import { useBackNavigation } from '@/Hooks/useBackNavigation';
 
 export default function SignalEdit({ signal, categories, cities, statuses, errors = {} }) {
@@ -166,6 +167,15 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 									editable={true}
 									borderRadius={4} />
 							</FormControl>
+
+							{/* Images */}
+							<SignalImageManager
+								images={signal?.images || []}
+								onImagesChange={(newImages) => {
+									// Handle images change (UI only for now)
+									console.log('Images changed:', newImages);
+								}}
+							/>
 
 							{/* Contact Name */}
 							<Controller

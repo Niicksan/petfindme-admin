@@ -126,10 +126,34 @@ class SignalController extends Controller
         Gate::authorize('update', $signal);
 
         return Inertia::render('Signals/Edit', [
-            'signal' => $signal,
-            'categories' => \App\Models\Category::all(),
-            'cities' => \App\Models\City::all(),
-            'statuses' => \App\Models\Status::all(),
+            'signal' => [
+                ...$signal->makeHidden(['created_at', 'updated_at'])->toArray(),
+                'images' => $signal->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'path' => $image->path,
+                        'size' => $image->size,
+                    ];
+                }),
+            ],
+            'categories' => \App\Models\Category::all()->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ];
+            }),
+            'cities' => \App\Models\City::all()->map(function ($city) {
+                return [
+                    'id' => $city->id,
+                    'name' => $city->name,
+                ];
+            }),
+            'statuses' => \App\Models\Status::all()->map(function ($status) {
+                return [
+                    'id' => $status->id,
+                    'name' => $status->name,
+                ];
+            }),
         ]);
     }
 
