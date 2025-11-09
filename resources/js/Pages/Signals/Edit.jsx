@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Head, router } from '@inertiajs/react';
 import {
@@ -13,10 +14,15 @@ import {
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
 import ActionBar from '@/Components/ActionBar';
+import { Map } from '@/Components/Map';
 import { useBackNavigation } from '@/Hooks/useBackNavigation';
 
 export default function SignalEdit({ signal, categories, cities, statuses, errors = {} }) {
 	const phoneRegex = new RegExp(/^\+?\d{5,13}$/);
+	const [coords, setCoords] = useState({});
+	const position = [coords?.latitude || 42.798165, coords?.longitude || 25.6275174];
+	const height = '300px';
+	const zoom = 7;
 	const { backUrl, backLabel } = useBackNavigation({
 		resourceType: 'signals',
 		resourceId: signal.id,
@@ -29,6 +35,7 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 	const {
 		control,
 		handleSubmit,
+		setValue,
 		formState: { errors: formErrors, isValid, isSubmitting },
 	} = useForm({
 		mode: "onChange",
@@ -37,26 +44,23 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 			description: signal.description || '',
 			contact_name: signal.contact_name || '',
 			phone: signal.phone || '',
-			geolocation: signal.geolocation ? JSON.stringify(signal.geolocation) : '',
+			geolocation: signal.geolocation || coords,
 			category_id: signal.category_id || '',
 			city_id: signal.city_id || '',
 			status_id: signal.status_id || '',
 		},
 	});
 
+	useEffect(() => {
+		setCoords(signal?.geolocation);
+	}, [signal?.geolocation]);
+
+	useEffect(() => {
+		setValue('geolocation', coords);
+	}, [coords]);
+
 	const onSubmit = (data) => {
-		// Parse geolocation if it's a valid JSON string
 		const submitData = { ...data };
-		if (submitData.geolocation) {
-			try {
-				submitData.geolocation = JSON.stringify(submitData.geolocation);
-
-			} catch (error) {
-				// If parsing fails, keep as string
-				console.warn('Invalid geolocation JSON format');
-			}
-		}
-
 		router.patch(`/signals/${signal.id}`, submitData);
 	};
 
@@ -149,21 +153,19 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 							/>
 
 							{/* Geolocation */}
-							<Controller
-								name="geolocation"
-								control={control}
-								rules={{ required: 'Geolocation is required' }}
-								render={({ field }) => (
-									<TextField
-										{...field}
-										fullWidth
-										label="Geolocation (JSON)"
-										error={!!(formErrors.geolocation || errors.geolocation)}
-										helperText={formErrors.geolocation?.message || errors.geolocation || "Enter coordinates as JSON (e.g., {'lat': 42.123, 'lng': 23.456})"}
-										required
-									/>
-								)}
-							/>
+							<FormControl fullWidth required >
+								<Typography variant="subtitle2" gutterBottom sx={{ mb: 1 }}>
+									Location *
+								</Typography>
+								<Map
+									coords={coords || 0}
+									setCoords={setCoords}
+									mapPosition={position}
+									mapHeight={height}
+									mapZoom={zoom}
+									editable={true}
+									borderRadius={4} />
+							</FormControl>
 
 							{/* Contact Name */}
 							<Controller

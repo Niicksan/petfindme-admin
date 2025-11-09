@@ -25,7 +25,7 @@ class UpdateSignalRequest extends FormRequest
             'title' => 'required|string|min:3|max:255',
             'city_id' => 'required|exists:cities,id',
             'category_id' => 'required|exists:categories,id',
-            'geolocation' => 'required|json',
+            'geolocation' => 'required|array',
             'contact_name' => 'required|string|min:3|max:255',
             'phone' => 'required|digits_between:5,13',
             'description' => 'required|string|min:20|max:3000',
