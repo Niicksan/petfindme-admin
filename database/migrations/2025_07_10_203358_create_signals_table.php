@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('contact_name');
             $table->string('phone');
             $table->text('description');
-            $table->bigInteger('status_id')->unsigned()->default(1);
+            $table->bigInteger('status_id')->unsigned()->nullable()->default(1);
             $table->timestamp('archived_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
