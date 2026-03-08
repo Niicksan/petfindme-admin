@@ -1,12 +1,13 @@
 services:
     laravel:
         container_name: laravel
+        image: 'sail-8.4/app'
         build:
             context: './vendor/laravel/sail/runtimes/8.4'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.4/app'
+        command: sh -c "npm install && npm run build"
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
