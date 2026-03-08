@@ -21,11 +21,12 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - sail
+            - petfindme-network 
         depends_on:
             - mysql
             - redis
             - mailpit
+            
     mysql:
         container_name: admin-mysql
         image: 'mysql/mysql-server:8.0'
@@ -42,15 +43,12 @@ services:
             - 'sail-mysql:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
-            - sail
+            - petfindme-network 
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - '-p${DB_PASSWORD}'
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+
     redis:
         container_name: admin-redis
         image: 'redis:alpine'
@@ -59,14 +57,12 @@ services:
         volumes:
             - 'sail-redis:/data'
         networks:
-            - sail
+            - petfindme-network 
         healthcheck:
-            test:
-                - CMD
-                - redis-cli
-                - ping
+            test: ["CMD", "redis-cli", "ping"]
             retries: 3
             timeout: 5s
+
     mailpit:
         container_name: mailpit
         image: 'axllent/mailpit:latest'
@@ -74,10 +70,12 @@ services:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
-            - sail
+            - petfindme-network 
+
 networks:
-    sail:
-        driver: bridge
+    petfindme-network:
+        external: true
+
 volumes:
     sail-mysql:
         driver: local
