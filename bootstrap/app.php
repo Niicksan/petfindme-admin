@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        // Trust all proxies
+        $middleware->trustProxies(at: ['172.19.0.1', '127.0.0.1']);
+
         // Register Admin Middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
