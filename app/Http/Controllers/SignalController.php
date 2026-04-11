@@ -6,6 +6,9 @@ use Gate;
 use Inertia\Inertia;
 use App\Models\Signal;
 use App\Http\Requests\UpdateSignalRequest;
+use App\Services\SignalImageService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SignalController extends Controller
 {
@@ -52,8 +55,9 @@ class SignalController extends Controller
             $query->where('status_id', $status);
         }
 
+        /** @var LengthAwarePaginator<int, Signal> $signals */
         $signals = $query->paginate($perPage, ['*'], 'page', $page);
-        $signals->through(function ($signal) {
+        $signals->through(function (Signal $signal) {
             return [
                 'id' => $signal?->id,
                 'title' => $signal?->title,
@@ -133,6 +137,7 @@ class SignalController extends Controller
                         'id' => $image->id,
                         'path' => $image->path,
                         'size' => $image->size,
+                        'order' => $image->order,
                     ];
                 }),
             ],
@@ -160,16 +165,37 @@ class SignalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSignalRequest $request, Signal $signal)
+    public function update(UpdateSignalRequest $request, Signal $signal, SignalImageService $imageService)
     {
         Gate::authorize('update', $signal);
 
-        // Retrieve the validated input data
-        $validated = $request->validated();
+        $hasFromPreview = $request->has('from_preview');
 
-        $signal->update($validated);
+        try {
+            $validated = $request->validated();
+            unset($validated['images'], $validated['new_images']);
 
-        return redirect()->route('signals.index');
+            $signal->update($validated);
+
+            if ($request->has('images')) {
+                $manifest = $request->input('images', []);
+                if (!\is_array($manifest)) {
+                    $manifest = [];
+                }
+
+                $newFiles = $request->file('new_images', []);
+                if ($newFiles instanceof UploadedFile) {
+                    $newFiles = [$newFiles];
+                }
+                $newFiles = array_values(array_filter($newFiles, fn($f) => $f instanceof UploadedFile));
+
+                $imageService->syncFromManifest($signal, $manifest, $newFiles);
+            }
+
+            return $this->redirectOnSuccess($signal, 'Signal updated successfully', $hasFromPreview);
+        } catch (\Exception $e) {
+            return $this->redirectOnError($signal, 'Failed to update signal. Please try again.', $hasFromPreview);
+        }
     }
 
     /**
@@ -263,12 +289,12 @@ class SignalController extends Controller
     /**
      * Helper method to redirect based on previous URL
      */
-    private function redirectOnSuccess(Signal $signal, string $successMessage, string $errorMessage = null)
+    private function redirectOnSuccess(Signal $signal, ?string $successMessage = nulll, bool $hasFromPreview = false)
     {
         $previousUrl = url()->previous();
         $previewRoute = route('signals.show', $signal->id);
 
-        if ($previousUrl === $previewRoute) {
+        if ($previousUrl === $previewRoute || $hasFromPreview) {
             return redirect($previewRoute)->with('success', $successMessage);
         }
 
@@ -278,12 +304,12 @@ class SignalController extends Controller
     /**
      * Helper method to redirect on error based on previous URL
      */
-    private function redirectOnError(Signal $signal, string $errorMessage)
+    private function redirectOnError(Signal $signal, string $errorMessage, bool $hasFromPreview = false)
     {
         $previousUrl = url()->previous();
         $previewRoute = route('signals.show', $signal->id);
 
-        if ($previousUrl === $previewRoute) {
+        if ($previousUrl === $previewRoute || $hasFromPreview) {
             return redirect($previewRoute)->with('error', $errorMessage);
         }
 

@@ -22,7 +22,7 @@ function formatFileSize(bytes) {
 	const k = 1024;
 	const sizes = ['B', 'KB', 'MB', 'GB'];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+	return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 }
 
 function getFileNameFromPath(path) {
@@ -31,15 +31,23 @@ function getFileNameFromPath(path) {
 	return parts[parts.length - 1] || 'Unknown';
 }
 
-export default function SignalImageManager({ images = [], onImagesChange }) {
+export const SignalImageManager = ({ images = [], onChange }) => {
 	const [localImages, setLocalImages] = useState(images);
 	const [draggedIndex, setDraggedIndex] = useState(null);
 	const [dragOverIndex, setDragOverIndex] = useState(null);
 
-	// Update local images when prop changes
 	useEffect(() => {
 		setLocalImages(images);
 	}, [images]);
+
+	const commit = (next) => {
+		const withOrder = next.map((image, index) => ({
+			...image,
+			order: index,
+		}));
+		setLocalImages(withOrder);
+		onChange(withOrder);
+	};
 
 	const handleDragStart = (e, index) => {
 		setDraggedIndex(index);
@@ -71,67 +79,36 @@ export default function SignalImageManager({ images = [], onImagesChange }) {
 
 		const newImages = [...localImages];
 		const draggedImage = newImages[draggedIndex];
-
-		// Remove dragged item first
 		newImages.splice(draggedIndex, 1);
+		newImages.splice(dropIndex, 0, draggedImage);
 
-		// Calculate correct insertion index after removal
-		// If dragging forward (down), the drop index shifts by -1
-		// If dragging backward (up), the drop index stays the same
-		const insertIndex = draggedIndex < dropIndex ? dropIndex - 1 : dropIndex;
-
-		// Insert at new position
-		newImages.splice(insertIndex, 0, draggedImage);
-
-		setLocalImages(newImages);
 		setDraggedIndex(null);
 		setDragOverIndex(null);
-
-		// Notify parent of change
-		if (onImagesChange) {
-			onImagesChange(newImages);
-		}
+		commit(newImages);
 	};
 
 	const handleDelete = (index) => {
-		const newImages = localImages.filter((_, i) => i !== index);
-		setLocalImages(newImages);
-
-		// Notify parent of change
-		if (onImagesChange) {
-			onImagesChange(newImages);
-		}
+		const next = localImages.filter((_, i) => i !== index);
+		commit(next);
 	};
 
 	const handleAddImage = () => {
-		// Create a file input element
 		const input = document.createElement('input');
 		input.type = 'file';
 		input.accept = 'image/*';
 		input.multiple = true;
 
 		input.onchange = (e) => {
-			const files = Array.from(e.target.files);
-
-			// Create preview objects for new images
-			const newImageObjects = files.map((file) => {
-				return {
-					id: `new-${Date.now()}-${Math.random()}`,
-					path: file.name, // Temporary path
-					size: file.size,
-					file: file, // Store file object for potential upload
-					isNew: true,
-					preview: URL.createObjectURL(file),
-				};
-			});
-
-			const updatedImages = [...localImages, ...newImageObjects];
-			setLocalImages(updatedImages);
-
-			// Notify parent of change
-			if (onImagesChange) {
-				onImagesChange(updatedImages);
-			}
+			const files = Array.from(e.target.files || []);
+			const newImageObjects = files.map((file) => ({
+				id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+				path: file.name,
+				size: file.size,
+				isNew: true,
+				file,
+				preview: URL.createObjectURL(file),
+			}));
+			commit([...localImages, ...newImageObjects]);
 		};
 
 		input.click();
@@ -140,16 +117,14 @@ export default function SignalImageManager({ images = [], onImagesChange }) {
 	return (
 		<Box>
 			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-				<Typography variant="subtitle1">
-					Images
-				</Typography>
+				<Typography variant="subtitle1">Images</Typography>
 				<Button
 					variant="outlined"
 					startIcon={<AddPhotoAlternateIcon />}
 					onClick={handleAddImage}
 					size="small"
 				>
-					Add Image
+					Add images
 				</Button>
 			</Box>
 
@@ -167,7 +142,7 @@ export default function SignalImageManager({ images = [], onImagesChange }) {
 					}}
 				>
 					<Typography variant="body2" color="text.secondary">
-						No images. Click "Add Image" to upload images.
+						No images. Use &quot;Add images&quot; to upload one or more files.
 					</Typography>
 				</Paper>
 			) : (
@@ -181,7 +156,7 @@ export default function SignalImageManager({ images = [], onImagesChange }) {
 							const isDragOver = dragOverIndex === index;
 
 							return (
-								<Box key={image.id || `image-${index}`}>
+								<Box key={String(image.id)}>
 									<ListItem
 										sx={{
 											backgroundColor: isDragOver ? 'action.hover' : 'transparent',
@@ -248,5 +223,4 @@ export default function SignalImageManager({ images = [], onImagesChange }) {
 			)}
 		</Box>
 	);
-}
-
+};

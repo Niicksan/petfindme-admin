@@ -10,9 +10,11 @@ return new class extends Migration {
 	 */
 	public function up(): void
 	{
-		Schema::table('contacts', function (Blueprint $table) {
-			$table->timestamp('opened_at')->nullable()->after('updated_at');
-		});
+		if (! Schema::hasColumn('contacts', 'opened_at')) {
+			Schema::table('contacts', function (Blueprint $table) {
+				$table->timestamp('opened_at')->nullable()->after('updated_at');
+			});
+		}
 	}
 
 	/**
@@ -20,9 +22,11 @@ return new class extends Migration {
 	 */
 	public function down(): void
 	{
-		Schema::table('contacts', function (Blueprint $table) {
-			$table->dropColumn('opened_at');
-		});
+		if (Schema::hasColumn('contacts', 'opened_at')) {
+			Schema::table('contacts', function (Blueprint $table) {
+				$table->dropColumn('opened_at');
+			});
+		}
 	}
 };
 

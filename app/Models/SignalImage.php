@@ -16,11 +16,12 @@ class SignalImage extends Model
         'signal_id',
         'path',
         'size',
-        'deleted_at',
+        'order',
     ];
 
     protected $casts = [
         'size' => 'integer',
+        'order' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

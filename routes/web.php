@@ -29,7 +29,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/signals', [SignalController::class, 'index'])->name('signals.index');
     Route::get('/signals/{signal}', [SignalController::class, 'show'])->name('signals.show');
     Route::get('/signals/edit/{signal}', [SignalController::class, 'edit'])->name('signals.edit');
-    Route::patch('/signals/{signal}', [SignalController::class, 'update'])->name('signals.update');
+    Route::post('/signals/{signal}', [SignalController::class, 'update'])->name('signals.update');
     Route::patch('/signals/activate/{signal}', [SignalController::class, 'activate'])->name('signals.activate');
     Route::patch('/signals/deactivate/{signal}', [SignalController::class, 'deactivate'])->name('signals.deactivate');
     Route::patch('/signals/archive/{signal}', [SignalController::class, 'archive'])->name('signals.archive');

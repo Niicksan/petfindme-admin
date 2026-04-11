@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ */
 class Signal extends Model
 {
     /** @use HasFactory<\Database\Factories\SignalFactory> */
@@ -39,7 +42,7 @@ class Signal extends Model
      */
     public function images(): HasMany
     {
-        return $this->hasMany(SignalImage::class);
+        return $this->hasMany(SignalImage::class)->orderBy('order');
     }
 
     /**

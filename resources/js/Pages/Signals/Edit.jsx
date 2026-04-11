@@ -15,12 +15,14 @@ import {
 import { Save, Cancel } from '@mui/icons-material';
 import ActionBar from '@/Components/ActionBar';
 import { Map } from '@/Components/Map';
-import SignalImageManager from '@/Components/SignalImageManager';
+import { SignalImageManager } from '@/Components/SignalImageManager';
 import { useBackNavigation } from '@/Hooks/useBackNavigation';
+import { buildSignalUpdateFormData } from '@/Utils/createFormData';
 
 export default function SignalEdit({ signal, categories, cities, statuses, errors = {} }) {
 	const phoneRegex = new RegExp(/^\+?\d{5,13}$/);
 	const [coords, setCoords] = useState({});
+	const [images, setImages] = useState(() => signal?.images || []);
 	const position = [coords?.latitude || 42.798165, coords?.longitude || 25.6275174];
 	const height = '300px';
 	const zoom = 7;
@@ -42,12 +44,12 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 		mode: "onChange",
 		defaultValues: {
 			title: signal.title || '',
-			description: signal.description || '',
-			contact_name: signal.contact_name || '',
-			phone: signal.phone || '',
-			geolocation: signal.geolocation || coords,
 			category_id: signal.category_id || '',
 			city_id: signal.city_id || '',
+			geolocation: signal.geolocation || coords,
+			contact_name: signal.contact_name || '',
+			phone: signal.phone || '',
+			description: signal.description || '',
 			status_id: signal.status_id || '',
 		},
 	});
@@ -56,13 +58,15 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 		setCoords(signal?.geolocation);
 	}, [signal?.geolocation]);
 
+
 	useEffect(() => {
 		setValue('geolocation', coords);
 	}, [coords]);
 
 	const onSubmit = (data) => {
-		const submitData = { ...data };
-		router.patch(`/signals/${signal.id}`, submitData);
+		const fromPreview = new URLSearchParams(window.location.search).get('from') === 'preview';
+		const formData = buildSignalUpdateFormData(data, images, { fromPreview });
+		router.post(`/signals/${signal.id}`, formData);
 	};
 
 	const handleCancel = () => {
@@ -82,7 +86,7 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 					<Typography variant="h4" gutterBottom sx={{ textAlign: 'center', py: 1 }}>
 						Edit Signal
 					</Typography>
-					<form onSubmit={handleSubmit(onSubmit)}>
+					<form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
 						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 							{/* Title */}
 							<Controller
@@ -169,13 +173,7 @@ export default function SignalEdit({ signal, categories, cities, statuses, error
 							</FormControl>
 
 							{/* Images */}
-							<SignalImageManager
-								images={signal?.images || []}
-								onImagesChange={(newImages) => {
-									// Handle images change (UI only for now)
-									console.log('Images changed:', newImages);
-								}}
-							/>
+							<SignalImageManager images={images} onChange={setImages} />
 
 							{/* Contact Name */}
 							<Controller
