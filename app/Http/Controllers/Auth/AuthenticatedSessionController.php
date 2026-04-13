@@ -47,6 +47,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
+        // Allow the next /login visit without ?access= when URL secrets are enabled (same key as EnsureAuthPageAccess).
+        $request->session()->put('auth_page_access_login', true);
+
         return redirect('/');
     }
 }

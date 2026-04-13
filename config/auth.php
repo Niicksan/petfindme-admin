@@ -112,4 +112,20 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Auth page URL secrets (optional)
+    |--------------------------------------------------------------------------
+    |
+    | When set, /login and /register require ?p=<secret> on first visit. Use
+    | two different values for AUTH_LOGIN_ACCESS_SECRET and
+    | AUTH_REGISTER_ACCESS_SECRET. Leave empty to disable this check.
+    |
+    */
+
+    'access' => [
+        'login_secret' => env('AUTH_LOGIN_ACCESS_SECRET'),
+        'register_secret' => env('AUTH_REGISTER_ACCESS_SECRET'),
+    ],
+
 ];

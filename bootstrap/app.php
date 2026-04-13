@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register Admin Middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'auth.page' => \App\Http\Middleware\EnsureAuthPageAccess::class,
         ]);
 
         // Exclude logout route from CSRF protection

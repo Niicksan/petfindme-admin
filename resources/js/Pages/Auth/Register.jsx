@@ -1,120 +1,181 @@
+import { useForm, Controller } from 'react-hook-form';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Box } from '@mui/material';
+import { Head, Link, router } from '@inertiajs/react';
 
-export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+export default function Register({ canLogin = true, loginUrl, errors = {} }) {
+    const emailRegex = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i);
+    const {
+        control,
+        handleSubmit,
+        getValues,
+        formState: { errors: formErrors, isSubmitting },
+    } = useForm({
+        defaultValues: {
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
+        },
+        mode: 'onChange',
     });
 
-    const submit = (e) => {
+    const onRegisterSubmit = (data, e) => {
         e.preventDefault();
-
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+        const submitData = { ...data };
+        router.post('register', submitData);
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Register" />
 
-            <form onSubmit={submit}>
-                <div>
+            <Box component="form" onSubmit={handleSubmit(onRegisterSubmit)}>
+                <Box sx={{ mt: 2, mb: 3 }}>
                     <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
-                        id="name"
+                    <Controller
                         name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
+                        control={control}
+                        rules={{
+                            required: 'Name is required',
+                            maxLength: {
+                                value: 255,
+                                message: 'Name must be at most 255 characters',
+                            },
+                        }}
+                        render={({ field }) => (
+                            <TextInput
+                                {...field}
+                                error={!!(formErrors.name || errors.name)}
+                                id="name"
+                                autoComplete="name"
+                                size="small"
+                                sx={{ mt: 1, color: 'white' }}
+                            />
+                        )}
                     />
+                    <InputError message={formErrors.name?.message} />
+                    <InputError message={errors.name} />
+                </Box>
 
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
+                <Box sx={{ mt: 2, mb: 3 }}>
                     <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
+                    <Controller
                         name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
+                        control={control}
+                        rules={{
+                            required: 'Email is required',
+                            pattern: {
+                                value: emailRegex,
+                                message: 'Enter a valid email address',
+                            },
+                        }}
+                        render={({ field }) => (
+                            <TextInput
+                                {...field}
+                                error={!!(formErrors.email || errors.email)}
+                                id="email"
+                                type="email"
+                                autoComplete="username"
+                                size="small"
+                                sx={{ mt: 1, color: 'white' }}
+                            />
+                        )}
                     />
+                    <InputError message={formErrors.email?.message} />
+                    <InputError message={errors.email} />
+                </Box>
 
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
+                <Box sx={{ mt: 2, mb: 0 }}>
                     <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
+                    <Controller
                         name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
+                        control={control}
+                        rules={{
+                            required: 'Password is required',
+                            minLength: {
+                                value: 5,
+                                message: 'Password must be at least 5 characters long',
+                            },
+                        }}
+                        render={({ field }) => (
+                            <TextInput
+                                {...field}
+                                error={!!(formErrors.password || errors.password)}
+                                id="password"
+                                type="password"
+                                autoComplete="new-password"
+                                size="small"
+                                password={true}
+                                sx={{ mt: 1, color: 'white' }}
+                            />
+                        )}
                     />
+                    <InputError message={formErrors.password?.message} />
+                    <InputError message={errors.password} />
+                </Box>
 
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
+                <Box sx={{ mt: 2, mb: 0 }}>
                     <InputLabel
                         htmlFor="password_confirmation"
                         value="Confirm Password"
                     />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
+                    <Controller
                         name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
+                        control={control}
+                        rules={{
+                            required: 'Please confirm your password',
+                            validate: (value) =>
+                                value === getValues('password') ||
+                                'Passwords do not match',
+                        }}
+                        render={({ field }) => (
+                            <TextInput
+                                {...field}
+                                error={
+                                    !!(
+                                        formErrors.password_confirmation ||
+                                        errors.password_confirmation
+                                    )
+                                }
+                                id="password_confirmation"
+                                type="password"
+                                autoComplete="new-password"
+                                size="small"
+                                password={true}
+                                sx={{ mt: 1, color: 'white' }}
+                            />
+                        )}
                     />
+                    <InputError message={formErrors.password_confirmation?.message} />
+                    <InputError message={errors.password_confirmation} />
+                </Box>
 
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'end',
+                        alignItems: 'center',
+                        my: 2,
+                    }}
+                >
+                    {canLogin && (
+                        <Link
+                            href={loginUrl ?? route('login')}
+                            className="ms-2 text-sm text-white"
+                        >
+                            Already registered?
+                        </Link>
+                    )}
 
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <PrimaryButton sx={{ ml: 2 }} type="submit" disabled={isSubmitting}>
                         Register
                     </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
+                </Box>
+            </Box>
+        </>
     );
 }
