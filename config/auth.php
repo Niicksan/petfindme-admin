@@ -117,15 +117,16 @@ return [
     | Auth page URL secrets (optional)
     |--------------------------------------------------------------------------
     |
-    | When set, /login and /register require ?p=<secret> on first visit. Use
-    | two different values for AUTH_LOGIN_ACCESS_SECRET and
-    | AUTH_REGISTER_ACCESS_SECRET. Leave empty to disable this check.
+    | When set, /login, /register, and /forgot-password require ?access=<secret>
+    | (or form field "access") on first visit. Leave empty to disable that page's
+    | gate. Forgot-password uses AUTH_FORGOT_PASSWORD_ACCESS_SECRET when set,
+    | otherwise the same value as AUTH_LOGIN_ACCESS_SECRET.
     |
     */
 
     'access' => [
         'login_secret' => env('AUTH_LOGIN_ACCESS_SECRET'),
         'register_secret' => env('AUTH_REGISTER_ACCESS_SECRET'),
+        'forgot_password_secret' => env('AUTH_LOGIN_ACCESS_SECRET'),
     ],
-
 ];

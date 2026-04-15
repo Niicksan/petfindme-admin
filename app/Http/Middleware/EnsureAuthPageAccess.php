@@ -20,6 +20,7 @@ class EnsureAuthPageAccess
         $secret = match ($page) {
             'login' => config('auth.access.login_secret'),
             'register' => config('auth.access.register_secret'),
+            'forgot-password' => config('auth.access.login_secret'),
             default => null,
         };
 
