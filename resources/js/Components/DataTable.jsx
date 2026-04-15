@@ -154,6 +154,12 @@ export default function DataTable({
 		});
 	};
 
+	const tableData = isServerPagination
+		? data
+		: data.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
+	const isEmpty = tableData.length === 0;
+	const colSpan = columns.length + (rowActions.length > 0 ? 1 : 0);
+
 	return (
 		<Box sx={{ p: 2 }}>
 			<Typography variant="h4" gutterBottom>
@@ -174,8 +180,14 @@ export default function DataTable({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{(isServerPagination ? data : data.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage))
-							.map((item) => (
+						{isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={colSpan} align="center" sx={{ py: 4, color: 'text.secondary' }}>
+									<Typography variant="body2">No results found</Typography>
+								</TableCell>
+							</TableRow>
+						) : (
+							tableData.map((item) => (
 								<TableRow
 									key={item.id}
 									sx={{
@@ -210,7 +222,8 @@ export default function DataTable({
 										</TableCell>
 									)}
 								</TableRow>
-							))}
+							))
+						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
