@@ -18,8 +18,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        $loginSecret = config('auth.access.login_secret');
+        $forgotPasswordUrl = Route::has('password.request')
+            ? ($loginSecret
+                ? route('password.request', ['access' => $loginSecret], absolute: false)
+                : route('password.request', absolute: false))
+            : null;
+
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
+            'forgotPasswordUrl' => $forgotPasswordUrl,
             'status' => session('status'),
         ]);
     }

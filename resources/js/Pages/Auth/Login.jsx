@@ -7,7 +7,7 @@ import TextInput from '@/Components/TextInput';
 import { Box, Typography } from '@mui/material';
 import { Head, Link, router } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword, errors = {} }) {
+export default function Login({ status, canResetPassword, forgotPasswordUrl, errors = {} }) {
     const emailRegex = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i);
     const {
         control,
@@ -116,7 +116,7 @@ export default function Login({ status, canResetPassword, errors = {} }) {
                 <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mt: 1, mb: 2 }}>
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
+                            href={forgotPasswordUrl ?? route('password.request')}
                             className="ms-2 text-sm text-white"
                         >
                             Forgot your password?
