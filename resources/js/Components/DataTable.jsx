@@ -156,7 +156,7 @@ export default function DataTable({
 
 	const tableData = isServerPagination
 		? data
-		: data.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
+		: data?.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
 	const isEmpty = tableData.length === 0;
 	const colSpan = columns.length + (rowActions.length > 0 ? 1 : 0);
 
@@ -169,12 +169,12 @@ export default function DataTable({
 				<Table>
 					<TableHead>
 						<TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-							{columns.map((column) => (
+							{columns?.map((column) => (
 								<TableCell key={column.key} align={column.align || 'left'}>
 									{column.label}
 								</TableCell>
 							))}
-							{rowActions.length > 0 && (
+							{rowActions?.length > 0 && (
 								<TableCell align="right">Actions</TableCell>
 							)}
 						</TableRow>
@@ -187,7 +187,7 @@ export default function DataTable({
 								</TableCell>
 							</TableRow>
 						) : (
-							tableData.map((item) => (
+							tableData?.map((item) => (
 								<TableRow
 									key={item.id}
 									sx={{
@@ -198,12 +198,12 @@ export default function DataTable({
 									}}
 									onClick={() => onRowClick && onRowClick(item)}
 								>
-									{columns.map((column) => (
+									{columns?.map((column) => (
 										<TableCell key={column.key} align={column.align || 'left'}>
 											{column.render ? column.render(item[column.key], item) : item[column.key]}
 										</TableCell>
 									))}
-									{rowActions.length > 0 && (
+									{rowActions?.length > 0 && (
 										<TableCell align="right">
 											<ActionsMenu
 												actions={getActionsForItem(item)}
@@ -223,6 +223,8 @@ export default function DataTable({
 									)}
 								</TableRow>
 							))
+						)}
+						))
 						)}
 					</TableBody>
 				</Table>
