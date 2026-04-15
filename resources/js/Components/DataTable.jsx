@@ -38,7 +38,8 @@ export default function DataTable({
 	const isServerPagination = pagination && pagination.data !== undefined;
 	const currentPage = isServerPagination ? pagination.current_page - 1 : 0;
 	const rowsPerPage = isServerPagination ? pagination.per_page : 10;
-	const totalCount = isServerPagination ? pagination.total : data.length;
+	const dataArray = data ?? [];
+	const totalCount = isServerPagination ? pagination.total : dataArray.length;
 
 	const handleMenuOpen = (event, itemId) => {
 		setAnchorEl(event.currentTarget);
@@ -135,7 +136,7 @@ export default function DataTable({
 	};
 
 	const getActionsForItem = (item) => {
-		return rowActions.map((action) => {
+		return rowActions?.map((action) => {
 			if (action.label === 'Activate/Deactivate') {
 				return {
 					key: item.is_active ? 'Deactivate' : 'Activate',
@@ -155,10 +156,10 @@ export default function DataTable({
 	};
 
 	const tableData = isServerPagination
-		? data
-		: data?.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
+		? dataArray
+		: dataArray.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
 	const isEmpty = tableData.length === 0;
-	const colSpan = columns.length + (rowActions.length > 0 ? 1 : 0);
+	const colSpan = (columns?.length ?? 0) + (rowActions?.length > 0 ? 1 : 0);
 
 	return (
 		<Box sx={{ p: 2 }}>
@@ -187,7 +188,7 @@ export default function DataTable({
 								</TableCell>
 							</TableRow>
 						) : (
-							tableData?.map((item) => (
+							tableData.map((item) => (
 								<TableRow
 									key={item.id}
 									sx={{
@@ -223,8 +224,6 @@ export default function DataTable({
 									)}
 								</TableRow>
 							))
-						)}
-						))
 						)}
 					</TableBody>
 				</Table>
